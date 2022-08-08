@@ -1,0 +1,3 @@
+import "os"
+
+println os.Args[1:]

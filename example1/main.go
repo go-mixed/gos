@@ -4,10 +4,11 @@ import (
 	"example1/a"
 	"fmt"
 	"github.com/bitly/go-simplejson"
+	"os"
 )
 
 func main() {
-	fmt.Printf("print from native\n")
+	fmt.Printf("print from native %#v\n", os.Args)
 	fmt.Printf("import package of sub-folder: a.A() => %s\n", a.A())
 	j := simplejson.New()
 	j.UnmarshalJSON([]byte("{\"id\": 1234567890}"))

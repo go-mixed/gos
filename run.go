@@ -20,14 +20,6 @@ type runOptions struct {
 	importPaths map[string]string
 }
 
-func gopBuildDir(ctx *igop.Context, path string) error {
-	data, err := gopbuild.BuildDir(ctx, path)
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
-}
-
 func addRunCmd(rootCmd *cobra.Command) {
 	var runOptions = runOptions{importPaths: map[string]string{}}
 
@@ -91,6 +83,14 @@ func addRunCmd(rootCmd *cobra.Command) {
 	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "path of vendor, default: [PATH]/vendor")
 
 	rootCmd.AddCommand(runCmd)
+}
+
+func gopBuildDir(ctx *igop.Context, path string) error {
+	data, err := gopbuild.BuildDir(ctx, path)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
 }
 
 func igoRun(runOptions runOptions, args []string) error {
