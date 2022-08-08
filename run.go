@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/goplus/igop"
+	"github.com/goplus/igop/gopbuild"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -17,6 +18,14 @@ type runOptions struct {
 	debug       bool
 	vendorPath  string
 	importPaths map[string]string
+}
+
+func gopBuildDir(ctx *igop.Context, path string) error {
+	data, err := gopbuild.BuildDir(ctx, path)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
 }
 
 func addRunCmd(rootCmd *cobra.Command) {
@@ -38,9 +47,9 @@ func addRunCmd(rootCmd *cobra.Command) {
 			runOptions.isDir = stat.IsDir()
 			runOptions.path, _ = filepath.Abs(path)
 			if stat.IsDir() {
-				runOptions.dir = path
+				runOptions.dir = runOptions.path
 			} else {
-				runOptions.dir = filepath.Dir(path)
+				runOptions.dir = filepath.Dir(runOptions.path)
 			}
 
 			if runOptions.vendorPath == "" {
@@ -102,18 +111,37 @@ func igoRun(runOptions runOptions, args []string) error {
 			fmt.Printf("# imported package [%s]%s\n", k, v)
 		}
 	}
+
 	if runOptions.isDir {
+		if containsExt(runOptions.dir, ".gop") {
+			if err = gopBuildDir(ctx, runOptions.dir); err != nil {
+				return err
+			}
+		}
 		code, err = ctx.Run(runOptions.path, args)
 	} else {
-		var buf []byte
-		if buf, err = os.ReadFile(runOptions.path); err != nil {
-			return err
-		}
-		code, err = ctx.RunFile(runOptions.path, buf, args)
+		//var buf []byte
+		//if buf, err = os.ReadFile(runOptions.path); err != nil {
+		//	return err
+		//}
+		code, err = ctx.RunFile(runOptions.path, nil, args)
 	}
 
 	if err != nil {
 		return fmt.Errorf("exit code %d: %w", code, err)
 	}
 	return nil
+}
+
+func containsExt(srcDir string, ext string) bool {
+	if f, err := os.Open(srcDir); err == nil {
+		defer f.Close()
+		fis, _ := f.Readdir(-1)
+		for _, fi := range fis {
+			if !fi.IsDir() && filepath.Ext(fi.Name()) == ext {
+				return true
+			}
+		}
+	}
+	return false
 }

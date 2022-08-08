@@ -1,7 +1,7 @@
 package main
 
 import (
-	"examples/a"
+	"example1/a"
 	"fmt"
 	"github.com/bitly/go-simplejson"
 )
