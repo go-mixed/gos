@@ -15,7 +15,7 @@ type replOptions struct {
 	debug bool
 }
 
-func RunReplCmd(rootCmd *cobra.Command) {
+func addReplCmd(rootCmd *cobra.Command) {
 	var replOptions replOptions
 
 	replCmd := &cobra.Command{

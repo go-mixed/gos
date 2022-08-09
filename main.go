@@ -15,7 +15,7 @@ func main() {
 	}
 
 	addRunCmd(rootCmd)
-	RunReplCmd(rootCmd)
+	addReplCmd(rootCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {

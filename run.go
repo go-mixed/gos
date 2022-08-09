@@ -44,22 +44,27 @@ func addRunCmd(rootCmd *cobra.Command) {
 				runOptions.dir = filepath.Dir(runOptions.path)
 			}
 
+			// 先查找项目中是否有vendor目录
 			if runOptions.vendorPath == "" {
 				runOptions.vendorPath = filepath.Join(runOptions.dir, "vendor")
+				if stat, err = os.Stat(filepath.Join(runOptions.vendorPath, "modules.txt")); err != nil || stat.IsDir() { // 项目中不存在vendor/modules.txt，或者这不是一个合法文件
+					runOptions.vendorPath = "" // 还原为空置
+				}
 			}
 
-			// vendor
-			if stat, err = os.Stat(runOptions.vendorPath); err == nil {
-				runOptions.vendorPath, _ = filepath.Abs(runOptions.vendorPath)
-				if !stat.IsDir() {
-					return nil
+			if runOptions.vendorPath != "" {
+				modulesTxt := filepath.Join(runOptions.vendorPath, "modules.txt")
+				if stat, err = os.Stat(modulesTxt); err != nil || stat.IsDir() { // vendor/modules.txt不存在
+					return fmt.Errorf("%s/modules.txt is not exist %w", runOptions.vendorPath, err)
 				}
+				runOptions.vendorPath, _ = filepath.Abs(runOptions.vendorPath)
 
-				f, err := os.Open(filepath.Join(runOptions.vendorPath, "modules.txt"))
+				f, err := os.Open(modulesTxt)
 				if err != nil {
 					return err
 				}
 				defer f.Close()
+
 				scanner := bufio.NewScanner(f)
 				for scanner.Scan() {
 					line := scanner.Text()
@@ -72,16 +77,24 @@ func addRunCmd(rootCmd *cobra.Command) {
 					return err
 				}
 			}
+
 			return nil
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return igoRun(runOptions, args[1:])
+		Run: func(cmd *cobra.Command, args []string) {
+			code, err := igoRun(runOptions, args[1:])
+			if err != nil {
+				println(err.Error())
+			}
+			if code != 0 {
+				os.Exit(code)
+			}
 		},
 	}
 
 	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "print debug information")
-	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "path of vendor, default: [PATH]/vendor")
 
+	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "path of vendor, default: [PATH]/vendor")
+	runCmd.MarkPersistentFlagDirname("vendor")
 	rootCmd.AddCommand(runCmd)
 }
 
@@ -93,7 +106,7 @@ func gopBuildDir(ctx *igop.Context, path string) error {
 	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
 }
 
-func igoRun(runOptions runOptions, args []string) error {
+func igoRun(runOptions runOptions, args []string) (int, error) {
 	var err error
 	var code int
 	var mode = igop.EnablePrintAny
@@ -105,7 +118,7 @@ func igoRun(runOptions runOptions, args []string) error {
 
 	for k, v := range runOptions.importPaths {
 		if err = ctx.AddImport(k, v); err != nil {
-			return err
+			return -1, err
 		}
 		if runOptions.debug {
 			fmt.Printf("# imported package [%s]%s\n", k, v)
@@ -115,7 +128,7 @@ func igoRun(runOptions runOptions, args []string) error {
 	if runOptions.isDir {
 		if containsExt(runOptions.dir, ".gop") {
 			if err = gopBuildDir(ctx, runOptions.dir); err != nil {
-				return err
+				return -1, err
 			}
 		}
 		code, err = ctx.Run(runOptions.path, args)
@@ -128,9 +141,9 @@ func igoRun(runOptions runOptions, args []string) error {
 	}
 
 	if err != nil {
-		return fmt.Errorf("exit code %d: %w", code, err)
+		return -1, fmt.Errorf("exit code %d: %w", code, err)
 	}
-	return nil
+	return 0, nil
 }
 
 func containsExt(srcDir string, ext string) bool {
