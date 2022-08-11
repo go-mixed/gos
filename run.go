@@ -84,7 +84,7 @@ func build(path string, options *runOptions) error {
 			return err
 		}
 		defer f.Close()
-		options.dir = filepath.Join(filepath.Dir(options.path), "_"+filepath.Base(options.path)+"_")
+		options.dir = filepath.Join(filepath.Dir(options.path), "__"+filepath.Base(options.path)+"__")
 		if _, err = unpackit.Unpack(f, options.dir); err != nil {
 			return err
 		}

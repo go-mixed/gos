@@ -7,7 +7,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.6](https://git
 - Run a [Go+ script](https://goplus.org/)
 - Run a Golang file
 - Run a Golang project (3rd party modules require a vendor directory)
-- Run a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`
+- Run a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
 - Go+ [Read-Eval-Print-Loop](https://repl.goplus.org/)
 
 ## Run Golang 
@@ -38,29 +38,29 @@ supported archive format
 > Unless you specify an absolute path that mean path on the OS, `--vendor` would be a relative path in archive
 
 
-### examples
+### Examples
 see  "example1"、"example2"
 
-golang project
+Golang project
 ```
 $ igop run example1/
 # as same as
 $ igop run example1/ --vendor example1/vendor
 ```
 
-golang project in the archive
+Golang project in the archive
 ```
 $ igop run examples1/example1.tar.gz --vendor vendor
 ```
 
 > `--vendor` mean the vendor path is `examples1/example1.tar.gz/vendor`
 
-go+
+Go+
 ```
 $ igop run examples2/1.gop
 ```
 
-executing arguments
+Executing arguments
 ```
 $ igop run examples2/2.gop -- --abc 123 --def
 ```
