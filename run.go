@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/c4milo/unpackit"
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
 	"github.com/spf13/cobra"
@@ -15,6 +16,7 @@ type runOptions struct {
 	path        string
 	dir         string
 	isDir       bool
+	isArchive   bool
 	debug       bool
 	vendorPath  string
 	importPaths map[string]string
@@ -26,64 +28,17 @@ func addRunCmd(rootCmd *cobra.Command) {
 	runCmd := &cobra.Command{
 		Use:   "run [OPTIONS] [PATH] -- [GOP ARG...]",
 		Short: "execute a go+ script file, or a folder of golang",
-		Args:  cobra.MinimumNArgs(1),
-		PreRunE: func(cmd *cobra.Command, args []string) error {
-			var err error
-			var stat os.FileInfo
-			path := args[0]
-
-			if stat, err = os.Stat(path); err != nil {
-				return err
-			}
-
-			runOptions.isDir = stat.IsDir()
-			runOptions.path, _ = filepath.Abs(path)
-			if stat.IsDir() {
-				runOptions.dir = runOptions.path
-			} else {
-				runOptions.dir = filepath.Dir(runOptions.path)
-			}
-
-			// 先查找项目中是否有vendor目录
-			if runOptions.vendorPath == "" {
-				runOptions.vendorPath = filepath.Join(runOptions.dir, "vendor")
-				if stat, err = os.Stat(filepath.Join(runOptions.vendorPath, "modules.txt")); err != nil || stat.IsDir() { // 项目中不存在vendor/modules.txt，或者这不是一个合法文件
-					runOptions.vendorPath = "" // 还原为空置
-				}
-			}
-
-			if runOptions.vendorPath != "" {
-				modulesTxt := filepath.Join(runOptions.vendorPath, "modules.txt")
-				if stat, err = os.Stat(modulesTxt); err != nil || stat.IsDir() { // vendor/modules.txt不存在
-					return fmt.Errorf("%s/modules.txt is not exist %w", runOptions.vendorPath, err)
-				}
-				runOptions.vendorPath, _ = filepath.Abs(runOptions.vendorPath)
-
-				f, err := os.Open(modulesTxt)
-				if err != nil {
-					return err
-				}
-				defer f.Close()
-
-				scanner := bufio.NewScanner(f)
-				for scanner.Scan() {
-					line := scanner.Text()
-					if !strings.Contains(line, "#") {
-						runOptions.importPaths[line] = filepath.Join(runOptions.vendorPath, line)
-					}
-				}
-
-				if err = scanner.Err(); err != nil {
-					return err
-				}
-			}
-
-			return nil
-		},
+		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			code, err := igoRun(runOptions, args[1:])
+			// 如果不传递 [PATH] 则将工作目录作为[PATH]
+			if len(args) == 0 {
+				p, _ := os.Getwd()
+				args = append(args, p)
+			}
+
+			code, err := igoRun(args[0], runOptions, args[1:])
 			if err != nil {
-				println(err.Error())
+				fmt.Fprint(os.Stderr, err.Error())
 			}
 			if code != 0 {
 				os.Exit(code)
@@ -106,12 +61,99 @@ func gopBuildDir(ctx *igop.Context, path string) error {
 	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
 }
 
-func igoRun(runOptions runOptions, args []string) (int, error) {
+func build(path string, options *runOptions) error {
+	var err error
+	var stat os.FileInfo
+
+	if stat, err = os.Stat(path); err != nil {
+		return err
+	}
+
+	options.isDir = stat.IsDir()
+	// 获取绝对路径
+	options.path, _ = filepath.Abs(path)
+
+	// 是tar.gz压缩文件
+	if !options.isDir && (strings.HasSuffix(options.path, ".tar.gz") ||
+		strings.HasSuffix(options.path, ".tar.bzip2") ||
+		strings.HasSuffix(options.path, ".tar.xz") ||
+		strings.HasSuffix(options.path, ".zip") ||
+		strings.HasSuffix(options.path, ".tar")) {
+		f, err := os.Open(options.path)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		options.dir = filepath.Join(filepath.Dir(options.path), "_"+filepath.Base(options.path)+"_")
+		if _, err = unpackit.Unpack(f, options.dir); err != nil {
+			return err
+		}
+		options.isArchive = true
+	} else if options.isDir {
+		options.dir = options.path
+	} else {
+		options.dir = filepath.Dir(options.path)
+	}
+
+	// 查找项目中是否有vendor目录
+	if options.vendorPath == "" {
+		vp := filepath.Join(options.dir, "vendor")
+		if stat, err = os.Stat(filepath.Join(vp, "modules.txt")); err == nil && !stat.IsDir() { // 项目中存在vendor/modules.txt
+			options.vendorPath = vp
+		}
+	}
+
+	if options.vendorPath != "" {
+		// 压缩包模式，并且vendor非绝对路径，则将压缩包目录附加在前
+		if options.isArchive && !filepath.IsAbs(options.vendorPath) {
+			options.vendorPath = filepath.Join(options.dir, options.vendorPath)
+		}
+		modulesTxt := filepath.Join(options.vendorPath, "modules.txt")
+
+		if stat, err = os.Stat(modulesTxt); err != nil || stat.IsDir() { // vendor/modules.txt不存在
+			return fmt.Errorf("%s/modules.txt is not exist %w", options.vendorPath, err)
+		}
+		options.vendorPath, _ = filepath.Abs(options.vendorPath)
+
+		f, err := os.Open(modulesTxt)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
+		scanner := bufio.NewScanner(f)
+		for scanner.Scan() {
+			line := scanner.Text()
+			if !strings.Contains(line, "#") {
+				options.importPaths[line] = filepath.Join(options.vendorPath, line)
+			}
+		}
+
+		if err = scanner.Err(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func igoRun(path string, runOptions runOptions, args []string) (int, error) {
+	// 删除解压的文件夹
+	defer func() {
+		if runOptions.isArchive {
+			os.RemoveAll(runOptions.dir)
+		}
+	}()
+
 	var err error
 	var code int
 	var mode = igop.EnablePrintAny
 	if runOptions.debug {
 		mode |= igop.EnableTracing | igop.EnableDumpImports | igop.EnableDumpInstr
+	}
+
+	// 解压、预读modules
+	if err = build(path, &runOptions); err != nil {
+		return -1, err
 	}
 
 	ctx := igop.NewContext(mode)
@@ -125,13 +167,16 @@ func igoRun(runOptions runOptions, args []string) (int, error) {
 		}
 	}
 
-	if runOptions.isDir {
-		if containsExt(runOptions.dir, ".gop") {
+	if runOptions.isDir || runOptions.isArchive {
+		gopCount := countByExt(runOptions.dir, ".gop")
+		if gopCount == 1 {
 			if err = gopBuildDir(ctx, runOptions.dir); err != nil {
 				return -1, err
 			}
+		} else if gopCount > 1 {
+			return -1, fmt.Errorf("there can be one *.gop in PROJECT compile mode")
 		}
-		code, err = ctx.Run(runOptions.path, args)
+		code, err = ctx.Run(runOptions.dir, args)
 	} else {
 		//var buf []byte
 		//if buf, err = os.ReadFile(runOptions.path); err != nil {
@@ -146,15 +191,16 @@ func igoRun(runOptions runOptions, args []string) (int, error) {
 	return 0, nil
 }
 
-func containsExt(srcDir string, ext string) bool {
+func countByExt(srcDir string, ext string) int {
+	extCount := 0
 	if f, err := os.Open(srcDir); err == nil {
 		defer f.Close()
 		fis, _ := f.Readdir(-1)
 		for _, fi := range fis {
 			if !fi.IsDir() && filepath.Ext(fi.Name()) == ext {
-				return true
+				extCount++
 			}
 		}
 	}
-	return false
+	return extCount
 }
