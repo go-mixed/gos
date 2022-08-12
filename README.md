@@ -2,7 +2,7 @@
 
 Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.6](https://github.com/goplus/igop)
 
-## Supported
+## Features
 
 - Run a [Go+ script](https://goplus.org/)
 - Run a Golang file
@@ -29,8 +29,6 @@ run a [Go+ script](https://goplus.org/), or run a Golang project
 
 #### Run a file with `*.gop`
 
-See [Example2/1.go](example2/1.gop)
-
 ```
 $ igop run /path/to/file.gop 
 
@@ -38,14 +36,15 @@ $ igop run /path/to/file.gop
 $ cd /path/to
 $ igop run file.gop
 ```
-> The difference is that they have different **Working directories**
-> Similarly hereinafter.
+The difference is that they have different **Working directories**
+
+Similarly hereinafter.
+
+> See [Example2/1.go](example2/1.gop)
 
 #### Run a file with `*.go`
 
 Golang file, Must include `package main` and `func main()`
-
-See [Example2/2.gp](example2/2.go)
 
 ```
 package main
@@ -54,6 +53,8 @@ func main() {
 
 }
 ```
+
+> See [Example2/2.go](example2/2.go)
 
 ```
 $ igop run /path/to/file.go 
@@ -98,7 +99,6 @@ $ igop run /path/to
 
 If the Golang project contains submodules, or 3rd party modules
 
-See [Example1/](example1)
 ```
 /path/to
   - main.go
@@ -114,6 +114,8 @@ MUST include these files
   - vendor/             <--- if you need 3rd-party modules
     - modules.txt
 ```
+
+> See [Example1/](example1)
 
 #### - go.mod
 
@@ -141,7 +143,9 @@ $ go mod vendor
 
 ### Archive mode
 
-Supported archive format. This is the packaging of project mode
+This is a convenient way that a packaging of project mode
+
+Supported archive format. 
 
 - tar.gz
 - tar.bzip2
@@ -170,7 +174,8 @@ $ igop run examples1/example1.tar.gz --vendor /path/to/vendor
 ```
 
 ### Examples
-see  "example1/"、"example2/"
+
+> See  "example1/"、"example2/"
 
 Project mode
 ```
