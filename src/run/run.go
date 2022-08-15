@@ -144,7 +144,8 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 
 	if runOptions.isDir || runOptions.isArchive {
 		// 读取go.mod/vendor
-		modules, err := mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
+		var modules *mod.Modules
+		modules, err = mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
 		if err != nil {
 			return -1, err
 		}
