@@ -1,12 +1,12 @@
-package main
+package run
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/c4milo/unpackit"
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
 	"github.com/spf13/cobra"
+	"igop/src/mod"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,7 +14,7 @@ import (
 
 type runOptions struct {
 	path        string
-	dir         string
+	projectDir  string
 	isDir       bool
 	isArchive   bool
 	debug       bool
@@ -22,8 +22,8 @@ type runOptions struct {
 	importPaths map[string]string
 }
 
-func addRunCmd(rootCmd *cobra.Command) {
-	var runOptions = runOptions{importPaths: map[string]string{}}
+func AddRunCmd(rootCmd *cobra.Command) {
+	var runOptions = runOptions{}
 
 	runCmd := &cobra.Command{
 		Use:   "run [OPTIONS] [PATH] -- [GOP ARG...]",
@@ -47,7 +47,7 @@ func addRunCmd(rootCmd *cobra.Command) {
 	}
 
 	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "print debug information")
-
+	runCmd.PersistentFlags().StringToStringVarP(&runOptions.importPaths, "import", "I", map[string]string{}, "import packages, -I NAME=PATH -I NAME2=PATH2")
 	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "path of vendor, default: [PATH]/vendor")
 	runCmd.MarkPersistentFlagDirname("vendor")
 	rootCmd.AddCommand(runCmd)
@@ -84,20 +84,20 @@ func build(path string, options *runOptions) error {
 			return err
 		}
 		defer f.Close()
-		options.dir = filepath.Join(filepath.Dir(options.path), "__"+filepath.Base(options.path)+"__")
-		if _, err = unpackit.Unpack(f, options.dir); err != nil {
+		options.projectDir = filepath.Join(filepath.Dir(options.path), "__"+filepath.Base(options.path)+"__")
+		if _, err = unpackit.Unpack(f, options.projectDir); err != nil {
 			return err
 		}
 		options.isArchive = true
 	} else if options.isDir {
-		options.dir = options.path
+		options.projectDir = options.path
 	} else {
-		options.dir = filepath.Dir(options.path)
+		options.projectDir = filepath.Dir(options.path)
 	}
 
 	// 查找项目中是否有vendor目录
 	if options.vendorPath == "" {
-		vp := filepath.Join(options.dir, "vendor")
+		vp := filepath.Join(options.projectDir, "vendor")
 		if stat, err = os.Stat(filepath.Join(vp, "modules.txt")); err == nil && !stat.IsDir() { // 项目中存在vendor/modules.txt
 			options.vendorPath = vp
 		}
@@ -106,32 +106,13 @@ func build(path string, options *runOptions) error {
 	if options.vendorPath != "" {
 		// 压缩包模式，并且vendor非绝对路径，则将压缩包目录附加在前
 		if options.isArchive && !filepath.IsAbs(options.vendorPath) {
-			options.vendorPath = filepath.Join(options.dir, options.vendorPath)
+			options.vendorPath = filepath.Join(options.projectDir, options.vendorPath)
 		}
-		modulesTxt := filepath.Join(options.vendorPath, "modules.txt")
 
-		if stat, err = os.Stat(modulesTxt); err != nil || stat.IsDir() { // vendor/modules.txt不存在
-			return fmt.Errorf("%s/modules.txt is not exist %w", options.vendorPath, err)
-		}
-		options.vendorPath, _ = filepath.Abs(options.vendorPath)
-
-		f, err := os.Open(modulesTxt)
-		if err != nil {
+		if options.vendorPath, err = filepath.Abs(options.vendorPath); err != nil {
 			return err
 		}
-		defer f.Close()
 
-		scanner := bufio.NewScanner(f)
-		for scanner.Scan() {
-			line := scanner.Text()
-			if !strings.Contains(line, "#") {
-				options.importPaths[line] = filepath.Join(options.vendorPath, line)
-			}
-		}
-
-		if err = scanner.Err(); err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -140,7 +121,7 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	// 删除解压的文件夹
 	defer func() {
 		if runOptions.isArchive {
-			os.RemoveAll(runOptions.dir)
+			os.RemoveAll(runOptions.projectDir)
 		}
 	}()
 
@@ -158,6 +139,13 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 
 	ctx := igop.NewContext(mode)
 
+	modules, err := mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
+	if err != nil {
+		return -2, err
+	}
+
+	ctx.Lookup = modules.Lookup
+
 	for k, v := range runOptions.importPaths {
 		if err = ctx.AddImport(k, v); err != nil {
 			return -1, err
@@ -168,15 +156,15 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	}
 
 	if runOptions.isDir || runOptions.isArchive {
-		gopCount := countByExt(runOptions.dir, ".gop")
+		gopCount := countByExt(runOptions.projectDir, ".gop")
 		if gopCount == 1 {
-			if err = gopBuildDir(ctx, runOptions.dir); err != nil {
+			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
 				return -1, err
 			}
 		} else if gopCount > 1 {
 			return -1, fmt.Errorf("there can be one *.gop in PROJECT compile mode")
 		}
-		code, err = ctx.Run(runOptions.dir, args)
+		code, err = ctx.Run(runOptions.projectDir, args)
 	} else {
 		//var buf []byte
 		//if buf, err = os.ReadFile(runOptions.path); err != nil {

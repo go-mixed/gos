@@ -13,7 +13,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.6](https://git
 ## Run Golang 
 
 ```
-igop run [Path] [-V | --debug] [--vendor path] -- [arguments...]
+igop run [Path] [-V | --debug] [--vendor path] [-I | --import NAME=PATH] -- [arguments...]
 ```
 
 run a [Go+ script](https://goplus.org/), or run a Golang project
@@ -23,6 +23,7 @@ run a [Go+ script](https://goplus.org/), or run a Golang project
 | [Path]            | string |               | File of golang+ script, "*.gop" <br/>Directory of golang, `package main` `func main(){}` in a file |
 | -V<br/>--debug    |        | false         | print the debug information                                                                        |
 | --vendor          | string | [Path]/vendor | Path of golang dependency packages.<br/>Generate by `go mod vendor`                                |
+| -I<br/>--import   |        |               | import packages. `-I NAME=PATH -I NAME2=PATH2`                                                     |
 | -- [arguments...] |        |               | Executing arguments of golang source/go+<br/>you can read the arguments in the source              |
 
 ### Single file mode
@@ -110,7 +111,6 @@ MUST include these files
 ```
 /path/to/
   - go.mod
-  - go.sum
   - vendor/             <--- if you need 3rd-party modules
     - modules.txt
 ```
@@ -123,14 +123,6 @@ Init the project to generate `go.mod` at first
 
 ```
 $ go mod init your project-name
-```
-
-#### - go.sum
-
-Run this command to generate `go.sum` after `go get`
-
-```
-$ go mod tidy
 ```
 
 #### - `vendor` directory
@@ -161,9 +153,11 @@ When it's running, it's actually being extract to `example1/__example1.tar.gz__`
 $ igop run examples1/example1.tar.gz --vendor vendor
 ```
 
-#### `vendor` path
+#### `vendor`, `import` path
 
-Unless you specify an absolute path that mean path on the OS, `--vendor` would be a relative path in archive
+Unless you specify an absolute path that mean path on the OS, `--vendor` would be a relative path in archive.
+
+Same with the PATH of `--import NAME=PATH`.
 
 > the argument of `--vendor vendor` mean the vendor path is `examples1/__example1.tar.gz__/vendor`
 

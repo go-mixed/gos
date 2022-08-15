@@ -1,4 +1,4 @@
-package main
+package repl
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type replOptions struct {
 	debug bool
 }
 
-func addReplCmd(rootCmd *cobra.Command) {
+func AddReplCmd(rootCmd *cobra.Command) {
 	var replOptions replOptions
 
 	replCmd := &cobra.Command{
