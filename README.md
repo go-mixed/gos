@@ -18,13 +18,13 @@ igop run [Path] [-V | --debug] [--vendor path] [-I | --import NAME=PATH] -- [arg
 
 run a [Go+ script](https://goplus.org/), or run a Golang project
 
-|                   | Values | Default       |                                                                                                    |
-|-------------------|--------|---------------|----------------------------------------------------------------------------------------------------|
-| [Path]            | string |               | File of golang+ script, "*.gop" <br/>Directory of golang, `package main` `func main(){}` in a file |
-| -V<br/>--debug    |        | false         | print the debug information                                                                        |
-| --vendor          | string | [Path]/vendor | Path of golang dependency packages.<br/>Generate by `go mod vendor`                                |
-| -I<br/>--import   |        |               | import packages. `-I NAME=PATH -I NAME2=PATH2`                                                     |
-| -- [arguments...] |        |               | Executing arguments of golang source/go+<br/>you can read the arguments in the source              |
+|                   | Values | Default       |                                                                          |
+|-------------------|--------|---------------|--------------------------------------------------------------------------|
+| [Path]            | string |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.       |
+| -V<br/>--debug    |        | false         | Print the debug information.                                             |
+| --vendor          | string | [Path]/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`. |
+| -I<br/>--import   |        |               | The package to be imported. `-I NAME=PATH -I NAME2=PATH2`.               |
+| -- [arguments...] |        |               | Script arguments.<br/>Be read `os.Args` in the script.                   |
 
 ### Single file mode
 
@@ -93,7 +93,7 @@ $ igop run
 $ igop run /path/to
 ```
 
-> Ignore the argument of `[PATH]`, the current **Working directory** is used.
+> Ignore the argument of `[PATH]`, the **Working directory** is used.
 
 
 #### With submodules, or 3rd party modules 
@@ -127,7 +127,8 @@ $ go mod init your project-name
 
 #### - `vendor` directory
 
-Run this command to create the vendor directory, `igop` need pre-reading the `vendor/modules.txt` to load the modules
+Run this command to create the vendor directory, 
+`igop` need to load the modules from `vendor/modules.txt`
 
 ```
 $ go mod vendor
@@ -189,7 +190,7 @@ Single mode
 $ igop run examples2/1.gop
 ```
 
-Executing arguments
+Script arguments
 ```
 $ igop run examples2/2.go -- --abc 123 --def
 ```

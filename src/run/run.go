@@ -26,8 +26,8 @@ func AddRunCmd(rootCmd *cobra.Command) {
 	var runOptions = runOptions{}
 
 	runCmd := &cobra.Command{
-		Use:   "run [OPTIONS] [PATH] -- [GOP ARG...]",
-		Short: "execute a go+ script file, or a folder of golang",
+		Use:   "run [OPTIONS] [PATH] -- [SCRIPT ARGUMENTS...]",
+		Short: "Execute a Go+ script file, or a Golang project",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			// 如果不传递 [PATH] 则将工作目录作为[PATH]
@@ -46,9 +46,9 @@ func AddRunCmd(rootCmd *cobra.Command) {
 		},
 	}
 
-	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "print debug information")
-	runCmd.PersistentFlags().StringToStringVarP(&runOptions.importPaths, "import", "I", map[string]string{}, "import packages, -I NAME=PATH -I NAME2=PATH2")
-	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "path of vendor, default: [PATH]/vendor")
+	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "Print debug information")
+	runCmd.PersistentFlags().StringToStringVarP(&runOptions.importPaths, "import", "I", map[string]string{}, "The package to be imported, -I NAME=PATH -I NAME2=PATH2")
+	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "The path of vendor, default: [PATH]/vendor")
 	runCmd.MarkPersistentFlagDirname("vendor")
 	rootCmd.AddCommand(runCmd)
 }
