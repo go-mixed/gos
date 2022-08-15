@@ -70,13 +70,16 @@ func NewModules(projectPath string, vendorPath string) (*Modules, error) {
 func (m *Modules) parseGoMod(projectPath string) error {
 	var err error
 
-	gomod := filepath.Join(projectPath, "go.mod")
+	goMod := filepath.Join(projectPath, "go.mod")
+	if stat, err := os.Stat(goMod); err != nil || stat.IsDir() { // go.mod不存在，退出
+		return nil
+	}
 
-	data, err := os.ReadFile(gomod)
+	data, err := os.ReadFile(goMod)
 	if err != nil {
 		return err
 	}
-	f, err := modfile.Parse(gomod, data, nil)
+	f, err := modfile.Parse(goMod, data, nil)
 	if err != nil {
 		return err
 	}

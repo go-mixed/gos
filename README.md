@@ -87,14 +87,11 @@ Run
 
 ```
 $ cd /path/to
-$ igop run
+$ igop run .
 
 # or
 $ igop run /path/to
 ```
-
-> Ignore the argument of `[PATH]`, the **Working directory** is used.
-
 
 #### With submodules, or 3rd party modules 
 
@@ -177,9 +174,6 @@ Project mode
 $ igop run example1/
 
 $ igop run example1/ --vendor example1/vendor
-
-$ cd example1/
-$ igop run --vendor vendor
 
 $ cd example1/
 $ igop run . --vendor vendor

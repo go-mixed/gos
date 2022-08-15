@@ -28,14 +28,8 @@ func AddRunCmd(rootCmd *cobra.Command) {
 	runCmd := &cobra.Command{
 		Use:   "run [OPTIONS] [PATH] -- [SCRIPT ARGUMENTS...]",
 		Short: "Execute a Go+ script file, or a Golang project",
-		Args:  cobra.MinimumNArgs(0),
+		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			// 如果不传递 [PATH] 则将工作目录作为[PATH]
-			if len(args) == 0 {
-				p, _ := os.Getwd()
-				args = append(args, p)
-			}
-
 			code, err := igoRun(args[0], runOptions, args[1:])
 			if err != nil {
 				fmt.Fprint(os.Stderr, err.Error())
@@ -61,7 +55,7 @@ func gopBuildDir(ctx *igop.Context, path string) error {
 	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
 }
 
-func build(path string, options *runOptions) error {
+func buildOptions(path string, options *runOptions) error {
 	var err error
 	var stat os.FileInfo
 
@@ -133,22 +127,15 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	}
 
 	// 解压、预读modules
-	if err = build(path, &runOptions); err != nil {
+	if err = buildOptions(path, &runOptions); err != nil {
 		return -1, err
 	}
 
 	ctx := igop.NewContext(mode)
 
-	modules, err := mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
-	if err != nil {
-		return -2, err
-	}
-
-	ctx.Lookup = modules.Lookup
-
 	for k, v := range runOptions.importPaths {
 		if err = ctx.AddImport(k, v); err != nil {
-			return -1, err
+			return -2, err
 		}
 		if runOptions.debug {
 			fmt.Printf("# imported package [%s]%s\n", k, v)
@@ -156,13 +143,21 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	}
 
 	if runOptions.isDir || runOptions.isArchive {
+		// 读取go.mod/vendor
+		modules, err := mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
+		if err != nil {
+			return -1, err
+		}
+		ctx.Lookup = modules.Lookup
+
+		// 检查目录下是否有gop文件
 		gopCount := countByExt(runOptions.projectDir, ".gop")
 		if gopCount == 1 {
 			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
 				return -1, err
 			}
 		} else if gopCount > 1 {
-			return -1, fmt.Errorf("there can be one *.gop in PROJECT compile mode")
+			return -3, fmt.Errorf("there can be one *.gop in PROJECT compile mode")
 		}
 		code, err = ctx.Run(runOptions.projectDir, args)
 	} else {
@@ -174,7 +169,7 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	}
 
 	if err != nil {
-		return -1, fmt.Errorf("exit code %d: %w", code, err)
+		return code, fmt.Errorf("exit code %d: %w", code, err)
 	}
 	return 0, nil
 }
