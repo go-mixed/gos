@@ -6,6 +6,7 @@ import (
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
 	"github.com/spf13/cobra"
+	"go.uber.org/multierr"
 	"igop/src/mod"
 	"os"
 	"path/filepath"
@@ -89,24 +90,21 @@ func buildOptions(path string, options *runOptions) error {
 		options.projectDir = filepath.Dir(options.path)
 	}
 
-	// 查找项目中是否有vendor目录
-	if options.vendorPath == "" {
-		vp := filepath.Join(options.projectDir, "vendor")
-		if stat, err = os.Stat(filepath.Join(vp, "modules.txt")); err == nil && !stat.IsDir() { // 项目中存在vendor/modules.txt
-			options.vendorPath = vp
-		}
-	}
-
+	// 配置了vendor，检查是否有效
 	if options.vendorPath != "" {
 		// 压缩包模式，并且vendor非绝对路径，则将压缩包目录附加在前
 		if options.isArchive && !filepath.IsAbs(options.vendorPath) {
 			options.vendorPath = filepath.Join(options.projectDir, options.vendorPath)
 		}
 
+		// 注意：找不到路径, 也不会报错
 		if options.vendorPath, err = filepath.Abs(options.vendorPath); err != nil {
-			return err
+			return fmt.Errorf("[Vendor]%w", err)
 		}
 
+		if stat, err = os.Stat(filepath.Join(options.vendorPath, "modules.txt")); err != nil || stat.IsDir() { // 不存在vendor/modules.txt
+			return fmt.Errorf("[Vendor]%w", multierr.Append(err, fmt.Errorf("%s/modules.txt is not a regular file", options.vendorPath)))
+		}
 	}
 	return nil
 }
@@ -149,7 +147,7 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 		if err != nil {
 			return -1, err
 		}
-		ctx.Lookup = modules.Lookup
+		modules.SetLookup(ctx)
 
 		// 检查目录下是否有gop文件
 		gopCount := countByExt(runOptions.projectDir, ".gop")

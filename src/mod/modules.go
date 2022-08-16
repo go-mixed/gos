@@ -2,8 +2,7 @@ package mod
 
 import (
 	"fmt"
-	"go.uber.org/multierr"
-	"go/build"
+	"github.com/goplus/igop"
 	"golang.org/x/mod/modfile"
 	"os"
 	"path/filepath"
@@ -25,38 +24,41 @@ type Modules struct {
 	rkeys       []string
 }
 
-func canonicalize(path string) (string, error) {
+func canonicalize(path string) string {
 	if path == "" {
-		return path, nil
+		return path
 	}
 	nPath, err := filepath.Abs(path)
 	if err != nil {
-		return path, err
+		return path
 	}
 	nPath = filepath.Clean(nPath)
-	return nPath, nil
+	return nPath
 }
 
 func NewModules(projectPath string, vendorPath string) (*Modules, error) {
-	var err error
 	var m = &Modules{modules: map[string]*Module{}}
 
-	if m.projectPath, err = canonicalize(projectPath); err != nil {
-		return nil, err
+	m.projectPath = canonicalize(projectPath)
+	// go.mod存在
+	if stat, err := os.Stat(filepath.Join(m.projectPath, "go.mod")); err == nil && !stat.IsDir() {
+		if err = m.parseGoMod(m.projectPath); err != nil {
+			return nil, err
+		}
 	}
 
-	if m.vendorPath, err = canonicalize(vendorPath); err != nil {
-		return nil, err
+	m.vendorPath = canonicalize(vendorPath)
+	if m.vendorPath == "" { // vendor 目录没有传递，尝试使用项目下的
+		m.vendorPath = filepath.Join(m.projectPath, "vendor")
+	}
+	// vendor/modules.txt文件存在
+	if stat, err := os.Stat(filepath.Join(m.vendorPath, "modules.txt")); err == nil && !stat.IsDir() {
+		if err = m.parseVendor(m.vendorPath); err != nil {
+			return nil, err
+		}
 	}
 
-	if err = m.parseGoMod(m.projectPath); err != nil {
-		return nil, err
-	}
-	if err = m.parseVendor(m.vendorPath); err != nil {
-		return nil, err
-	}
-
-	for k, _ := range m.modules {
+	for k := range m.modules {
 		m.rkeys = append(m.rkeys, k)
 	}
 	// rkeys 倒序排序
@@ -71,9 +73,6 @@ func (m *Modules) parseGoMod(projectPath string) error {
 	var err error
 
 	goMod := filepath.Join(projectPath, "go.mod")
-	if stat, err := os.Stat(goMod); err != nil || stat.IsDir() { // go.mod不存在，退出
-		return nil
-	}
 
 	data, err := os.ReadFile(goMod)
 	if err != nil {
@@ -100,28 +99,13 @@ func (m *Modules) parseGoMod(projectPath string) error {
 		GoVersion: goVersion,
 	}
 
-	//for _, require := range f.Require {
-	//	m.modules[require.Mod.Path] = &Module{
-	//		Name:      require.Mod.Path,
-	//		Path:      "",
-	//		Version:   require.Mod.Version,
-	//		GoVersion: "",
-	//	}
-	//}
-
 	return nil
 }
 
 func (m *Modules) parseVendor(vendorPath string) error {
-	if vendorPath == "" {
-		return nil
-	} else if stat, err := os.Stat(vendorPath); err != nil || !stat.IsDir() {
-		return multierr.Append(err, fmt.Errorf("\"%s\" is not a valid directory", vendorPath))
-	}
-
 	vendorList, err := readVendorList(vendorPath)
 	if err != nil {
-		return err
+		return fmt.Errorf("[Vendor]%w", err)
 	}
 
 	for k, v := range vendorList.vendorMeta {
@@ -155,12 +139,9 @@ func (m *Modules) Lookup(root, pkg string) (dir string, found bool) {
 		return filepath.Join(module.Path, pkg[len(module.Name+"/"):]), true
 	}
 
-	// 使用
-	bp, err := build.Import(pkg, m.projectPath, build.FindOnly)
-	if err == nil && bp.ImportPath == m.projectPath {
-		return bp.Dir, true
-	}
-
-	panic(fmt.Errorf("package %s not found", pkg))
 	return "", false
+}
+
+func (m *Modules) SetLookup(ctx *igop.Context) {
+	ctx.Lookup = m.Lookup
 }
