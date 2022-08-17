@@ -1,0 +1,5 @@
+import "strconv"
+
+func addSafe(x, y string) int {
+  return strconv.atoi(x)?:0 + strconv.atoi(y)?:0
+}

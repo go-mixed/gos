@@ -1,12 +1,12 @@
 # iGo+
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.6](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.7](https://github.com/goplus/igop)
 
 ## Features
 
 - Run a [Go+ script](https://goplus.org/)
 - Run a Golang file
-- Run a Golang project (3rd party modules require a vendor directory)
+- Run a Golang project (3<sup>rd</sup> party modules require a vendor directory)
 - Run a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
 - Go+ [Read-Eval-Print-Loop](https://repl.goplus.org/)
 
@@ -16,7 +16,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.6](https://git
 igop run [Path] [-V | --debug] [--vendor path] [-I | --import NAME=PATH] -- [arguments...]
 ```
 
-run a [Go+ script](https://goplus.org/), or run a Golang project
+Run a [Go+ script](https://goplus.org/), or a Golang project
 
 |                   | Values | Default       |                                                                          |
 |-------------------|--------|---------------|--------------------------------------------------------------------------|
@@ -63,25 +63,21 @@ $ igop run /path/to/file.go
 
 ### Project mode
 
-#### No submodules, No 3rd party modules
+#### Without submodules, 3rd party modules
 
 - The package MUST be `package main` in all `.go` files 
 - Included `func main()` in anyone `.go` file, or ONLY one `.gop` file
 - No sub-folder. even if the sub-folders are present, they will be ignored
+- Supported Go/Go+ hybrid programming
 
 ```
 /path/to/
  - func.go
+ - func.gop
  - main.go
 ```
 
-ONLY allowed one `.gop` file as the `main.go`
-
-```
-/path/to/
-  - func.go
-  - xxx.gop
-```
+> ONLY allowed one `func main(){}`, Whether in the *.gop or *.go, See [Example3](example3)
 
 Run
 
@@ -93,9 +89,11 @@ $ igop run .
 $ igop run /path/to
 ```
 
-#### With submodules, or 3rd party modules 
+#### With submodules, or 3<sup>rd</sup> party modules 
 
-If the Golang project contains submodules, or 3rd party modules
+If the Golang project contains submodules, or 3<sup>rd</sup> party modules.
+
+Not allowed *.gop(Temporary)
 
 ```
 /path/to
@@ -167,9 +165,18 @@ $ igop run examples1/example1.tar.gz --vendor /path/to/vendor
 
 ### Examples
 
-> See  "example1/"、"example2/"
+> See  "example1/"、"example2/"、"example3/"
 
-Project mode
+Project mode without modules
+```
+$ igop run example3/
+
+$ cd example3/
+$ igop run .
+```
+
+
+Project mode with modules
 ```
 $ igop run example1/
 
@@ -178,6 +185,8 @@ $ igop run example1/ --vendor example1/vendor
 $ cd example1/
 $ igop run . --vendor vendor
 ```
+
+
 
 Single mode
 ```
@@ -193,8 +202,8 @@ $ igop run examples2/2.go -- --abc 123 --def
 ```
 igop repl
 ```
-A [go+](https://goplus.org/) Read Eval Print Loop
+A [Go+](https://goplus.org/) Read Eval Print Loop
 
-online: [https://repl.goplus.org/](https://repl.goplus.org/)
+Online: [https://repl.goplus.org/](https://repl.goplus.org/)
 
 ![](docs/repl_examples.png)

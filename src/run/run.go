@@ -145,18 +145,18 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 		var modules *mod.Modules
 		modules, err = mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
 		if err != nil {
-			return -1, err
+			return -3, err
 		}
 		modules.SetLookup(ctx)
 
 		// 检查目录下是否有gop文件
-		gopCount := countByExt(runOptions.projectDir, ".gop")
-		if gopCount == 1 {
-			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
-				return -1, err
+		if containsExt(runOptions.projectDir, ".gop") {
+			if containsSubModules(runOptions.projectDir) {
+				return -4, fmt.Errorf("*.gop is not allowed in project mode with 3rd party modules")
 			}
-		} else if gopCount > 1 {
-			return -3, fmt.Errorf("there can be one *.gop in PROJECT compile mode")
+			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
+				return -4, err
+			}
 		}
 		code, err = ctx.Run(runOptions.projectDir, args)
 	} else {
@@ -173,16 +173,35 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 	return 0, nil
 }
 
-func countByExt(srcDir string, ext string) int {
-	extCount := 0
+func containsExt(srcDir string, ext string) bool {
 	if f, err := os.Open(srcDir); err == nil {
 		defer f.Close()
 		fis, _ := f.Readdir(-1)
 		for _, fi := range fis {
 			if !fi.IsDir() && filepath.Ext(fi.Name()) == ext {
-				extCount++
+				return true
 			}
 		}
 	}
-	return extCount
+	return false
+}
+
+func containsSubModules(projectPath string) bool {
+	// go.mod
+	if stat, err := os.Stat(filepath.Join(projectPath, "go.mod")); err == nil && !stat.IsDir() {
+		return true
+	}
+
+	// 查找子目录包含 *.go，只做了简单的查询
+	if f, err := os.Open(projectPath); err == nil {
+		defer f.Close()
+		fis, _ := f.Readdir(-1)
+		for _, fi := range fis {
+			if fi.IsDir() && containsExt(filepath.Join(projectPath, fi.Name()), ".go") {
+				return true
+			}
+		}
+	}
+
+	return false
 }

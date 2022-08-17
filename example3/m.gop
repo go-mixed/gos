@@ -1,0 +1,5 @@
+package main
+
+println add(1, 2)
+println addSafe("3", "4")
+println addS("5", "6")
