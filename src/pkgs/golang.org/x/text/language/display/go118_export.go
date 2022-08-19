@@ -1,0 +1,136 @@
+// export by github.com/goplus/igop/cmd/qexp
+
+//go:build go1.18
+// +build go1.18
+
+package display
+
+import (
+	q "golang.org/x/text/language/display"
+
+	"go/constant"
+	"reflect"
+
+	"github.com/goplus/igop"
+)
+
+func init() {
+	igop.RegisterPackage(&igop.Package{
+		Name: "display",
+		Path: "golang.org/x/text/language/display",
+		Deps: map[string]string{
+			"fmt":                               "fmt",
+			"golang.org/x/text/internal/format": "format",
+			"golang.org/x/text/language":        "language",
+			"sort":                              "sort",
+			"strings":                           "strings",
+		},
+		Interfaces: map[string]reflect.Type{
+			"Namer": reflect.TypeOf((*q.Namer)(nil)).Elem(),
+		},
+		NamedTypes: map[string]reflect.Type{
+			"Dictionary": reflect.TypeOf((*q.Dictionary)(nil)).Elem(),
+			"Formatter":  reflect.TypeOf((*q.Formatter)(nil)).Elem(),
+			"SelfNamer":  reflect.TypeOf((*q.SelfNamer)(nil)).Elem(),
+		},
+		AliasTypes: map[string]reflect.Type{},
+		Vars: map[string]reflect.Value{
+			"Afrikaans":            reflect.ValueOf(&q.Afrikaans),
+			"Albanian":             reflect.ValueOf(&q.Albanian),
+			"AmericanEnglish":      reflect.ValueOf(&q.AmericanEnglish),
+			"Amharic":              reflect.ValueOf(&q.Amharic),
+			"Arabic":               reflect.ValueOf(&q.Arabic),
+			"Armenian":             reflect.ValueOf(&q.Armenian),
+			"Azerbaijani":          reflect.ValueOf(&q.Azerbaijani),
+			"Bengali":              reflect.ValueOf(&q.Bengali),
+			"BrazilianPortuguese":  reflect.ValueOf(&q.BrazilianPortuguese),
+			"BritishEnglish":       reflect.ValueOf(&q.BritishEnglish),
+			"Bulgarian":            reflect.ValueOf(&q.Bulgarian),
+			"Burmese":              reflect.ValueOf(&q.Burmese),
+			"Catalan":              reflect.ValueOf(&q.Catalan),
+			"Chinese":              reflect.ValueOf(&q.Chinese),
+			"Croatian":             reflect.ValueOf(&q.Croatian),
+			"Czech":                reflect.ValueOf(&q.Czech),
+			"Danish":               reflect.ValueOf(&q.Danish),
+			"Dutch":                reflect.ValueOf(&q.Dutch),
+			"English":              reflect.ValueOf(&q.English),
+			"Estonian":             reflect.ValueOf(&q.Estonian),
+			"EuropeanPortuguese":   reflect.ValueOf(&q.EuropeanPortuguese),
+			"EuropeanSpanish":      reflect.ValueOf(&q.EuropeanSpanish),
+			"Filipino":             reflect.ValueOf(&q.Filipino),
+			"Finnish":              reflect.ValueOf(&q.Finnish),
+			"French":               reflect.ValueOf(&q.French),
+			"Georgian":             reflect.ValueOf(&q.Georgian),
+			"German":               reflect.ValueOf(&q.German),
+			"Greek":                reflect.ValueOf(&q.Greek),
+			"Gujarati":             reflect.ValueOf(&q.Gujarati),
+			"Hebrew":               reflect.ValueOf(&q.Hebrew),
+			"Hindi":                reflect.ValueOf(&q.Hindi),
+			"Hungarian":            reflect.ValueOf(&q.Hungarian),
+			"Icelandic":            reflect.ValueOf(&q.Icelandic),
+			"Indonesian":           reflect.ValueOf(&q.Indonesian),
+			"Italian":              reflect.ValueOf(&q.Italian),
+			"Japanese":             reflect.ValueOf(&q.Japanese),
+			"Kannada":              reflect.ValueOf(&q.Kannada),
+			"Kazakh":               reflect.ValueOf(&q.Kazakh),
+			"Khmer":                reflect.ValueOf(&q.Khmer),
+			"Kirghiz":              reflect.ValueOf(&q.Kirghiz),
+			"Korean":               reflect.ValueOf(&q.Korean),
+			"Lao":                  reflect.ValueOf(&q.Lao),
+			"LatinAmericanSpanish": reflect.ValueOf(&q.LatinAmericanSpanish),
+			"Latvian":              reflect.ValueOf(&q.Latvian),
+			"Lithuanian":           reflect.ValueOf(&q.Lithuanian),
+			"Macedonian":           reflect.ValueOf(&q.Macedonian),
+			"Malay":                reflect.ValueOf(&q.Malay),
+			"Malayalam":            reflect.ValueOf(&q.Malayalam),
+			"Marathi":              reflect.ValueOf(&q.Marathi),
+			"ModernStandardArabic": reflect.ValueOf(&q.ModernStandardArabic),
+			"Mongolian":            reflect.ValueOf(&q.Mongolian),
+			"Nepali":               reflect.ValueOf(&q.Nepali),
+			"Norwegian":            reflect.ValueOf(&q.Norwegian),
+			"Persian":              reflect.ValueOf(&q.Persian),
+			"Polish":               reflect.ValueOf(&q.Polish),
+			"Portuguese":           reflect.ValueOf(&q.Portuguese),
+			"Punjabi":              reflect.ValueOf(&q.Punjabi),
+			"Romanian":             reflect.ValueOf(&q.Romanian),
+			"Russian":              reflect.ValueOf(&q.Russian),
+			"Self":                 reflect.ValueOf(&q.Self),
+			"Serbian":              reflect.ValueOf(&q.Serbian),
+			"SerbianLatin":         reflect.ValueOf(&q.SerbianLatin),
+			"SimplifiedChinese":    reflect.ValueOf(&q.SimplifiedChinese),
+			"Sinhala":              reflect.ValueOf(&q.Sinhala),
+			"Slovak":               reflect.ValueOf(&q.Slovak),
+			"Slovenian":            reflect.ValueOf(&q.Slovenian),
+			"Spanish":              reflect.ValueOf(&q.Spanish),
+			"Supported":            reflect.ValueOf(&q.Supported),
+			"Swahili":              reflect.ValueOf(&q.Swahili),
+			"Swedish":              reflect.ValueOf(&q.Swedish),
+			"Tamil":                reflect.ValueOf(&q.Tamil),
+			"Telugu":               reflect.ValueOf(&q.Telugu),
+			"Thai":                 reflect.ValueOf(&q.Thai),
+			"TraditionalChinese":   reflect.ValueOf(&q.TraditionalChinese),
+			"Turkish":              reflect.ValueOf(&q.Turkish),
+			"Ukrainian":            reflect.ValueOf(&q.Ukrainian),
+			"Urdu":                 reflect.ValueOf(&q.Urdu),
+			"Uzbek":                reflect.ValueOf(&q.Uzbek),
+			"Values":               reflect.ValueOf(&q.Values),
+			"Vietnamese":           reflect.ValueOf(&q.Vietnamese),
+			"Zulu":                 reflect.ValueOf(&q.Zulu),
+		},
+		Funcs: map[string]reflect.Value{
+			"Language":  reflect.ValueOf(q.Language),
+			"Languages": reflect.ValueOf(q.Languages),
+			"Region":    reflect.ValueOf(q.Region),
+			"Regions":   reflect.ValueOf(q.Regions),
+			"Script":    reflect.ValueOf(q.Script),
+			"Scripts":   reflect.ValueOf(q.Scripts),
+			"Tag":       reflect.ValueOf(q.Tag),
+			"Tags":      reflect.ValueOf(q.Tags),
+		},
+		TypedConsts: map[string]igop.TypedConst{},
+		UntypedConsts: map[string]igop.UntypedConst{
+			"CLDRVersion": {"untyped string", constant.MakeString(string(q.CLDRVersion))},
+			"Version":     {"untyped string", constant.MakeString(string(q.Version))},
+		},
+	})
+}
