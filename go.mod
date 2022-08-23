@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/c4milo/unpackit v0.1.0
 	github.com/goplus/gop v1.1.3
-	github.com/goplus/igop v0.8.7
+	github.com/goplus/igop v0.8.8
 	github.com/goplus/ipkg v0.1.3
 	github.com/goplus/reflectx v0.9.5
 	github.com/peterh/liner v1.2.2
@@ -30,6 +30,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/visualfc/funcval v0.1.3 // indirect
+	github.com/visualfc/goembed v0.2.2 // indirect
 	github.com/visualfc/xtype v0.1.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect

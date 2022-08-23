@@ -1,6 +1,6 @@
 # iGo+
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.7](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.8](https://github.com/goplus/igop)
 
 ## Features
 
