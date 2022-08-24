@@ -28,7 +28,7 @@ func RunCmd() *cobra.Command {
 	var options = runOptions{}
 
 	runCmd := &cobra.Command{
-		Use:   "run [OPTIONS] [PATH] -- [SCRIPT ARGUMENTS...]",
+		Use:   "run [OPTIONS] <PATH> -- <script argument>",
 		Short: "Execute a Go+ script file, or a Golang project",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -44,7 +44,7 @@ func RunCmd() *cobra.Command {
 
 	runCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "V", false, "Print debug information")
 	runCmd.PersistentFlags().StringToStringVarP(&options.importPaths, "import", "I", map[string]string{}, "The package to be imported, -I NAME=PATH -I NAME2=PATH2")
-	runCmd.PersistentFlags().StringVar(&options.vendorPath, "vendor", "", "The path of vendor, default: [PATH]/vendor")
+	runCmd.PersistentFlags().StringVar(&options.vendorPath, "vendor", "", "The path of vendor, default: <PATH>/vendor")
 	runCmd.PersistentFlags().StringArrayVarP(&options.pluginPaths, "plugin", "p", nil, "the golang plugin path (only for linux)")
 	runCmd.MarkPersistentFlagDirname("vendor")
 	return runCmd

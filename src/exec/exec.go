@@ -19,8 +19,8 @@ func ExecCmd() *cobra.Command {
 	var options = execOptions{}
 
 	execCmd := &cobra.Command{
-		Use:   "exec [-s | --script \"...\"] -- [SCRIPT ARGUMENTS...]",
-		Short: "execute from stdin, or -s \"code\"",
+		Use:   "exec [-s | --script <code>] -- <script arguments>",
+		Short: "execute script <code> from stdin, or argument of -s \"code\"",
 		Run: func(cmd *cobra.Command, args []string) {
 			options.scriptIsSet = cmd.PersistentFlags().Changed("script")
 
