@@ -173,11 +173,24 @@ func igoRun(path string, options runOptions, args []string) (int, error) {
 		}
 		code, err = ctx.Run(options.projectDir, args)
 	} else {
-		//var buf []byte
-		//if buf, err = os.ReadFile(options.path); err != nil {
-		//	return err
-		//}
-		code, err = ctx.RunFile(options.path, nil, args)
+		_path := options.path
+		ext := filepath.Ext(options.path)
+		var buf []byte
+		if buf, err = os.ReadFile(options.path); err != nil {
+			return -7, err
+		}
+
+		// 修改后缀
+		if ext != ".go" && ext != ".gop" {
+			_path = _path + ".gop"
+		}
+
+		// 修改bang line为golang支持的注释, 参考 https://github.com/erning/gorun/blob/master/gorun.go#L167
+		if len(buf) > 2 && buf[0] == '#' && buf[1] == '!' {
+			buf[0] = '/'
+			buf[1] = '/'
+		}
+		code, err = ctx.RunFile(_path, buf, args)
 	}
 
 	if err != nil {
