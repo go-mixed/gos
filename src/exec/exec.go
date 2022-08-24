@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 	"io"
 	"os"
+
+	_ "igop/src/mod"
 )
 
 type execOptions struct {
