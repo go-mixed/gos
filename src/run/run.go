@@ -21,6 +21,7 @@ type runOptions struct {
 	debug       bool
 	vendorPath  string
 	importPaths map[string]string
+	pluginPaths []string
 }
 
 func AddRunCmd(rootCmd *cobra.Command) {
@@ -44,6 +45,7 @@ func AddRunCmd(rootCmd *cobra.Command) {
 	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "Print debug information")
 	runCmd.PersistentFlags().StringToStringVarP(&runOptions.importPaths, "import", "I", map[string]string{}, "The package to be imported, -I NAME=PATH -I NAME2=PATH2")
 	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "The path of vendor, default: [PATH]/vendor")
+	runCmd.PersistentFlags().StringArrayVarP(&runOptions.pluginPaths, "plugin", "p", nil, "the golang plugin path (only for linux)")
 	runCmd.MarkPersistentFlagDirname("vendor")
 	rootCmd.AddCommand(runCmd)
 }
@@ -97,7 +99,7 @@ func buildOptions(path string, options *runOptions) error {
 			options.vendorPath = filepath.Join(options.projectDir, options.vendorPath)
 		}
 
-		// 注意：找不到路径, 也不会报错
+		// 变为绝对路径
 		if options.vendorPath, err = filepath.Abs(options.vendorPath); err != nil {
 			return fmt.Errorf("[Vendor]%w", err)
 		}
@@ -140,19 +142,30 @@ func igoRun(path string, runOptions runOptions, args []string) (int, error) {
 		}
 	}
 
-	if runOptions.isDir || runOptions.isArchive {
-		// 读取go.mod/vendor
-		var modules *mod.Modules
-		modules, err = mod.NewModules(runOptions.projectDir, runOptions.vendorPath)
-		if err != nil {
-			return -3, err
+	modules := mod.NewModules(runOptions.projectDir)
+	modules.SetLookup(ctx)
+	// 加载plugins
+	if err = modules.LoadPlugins(runOptions.pluginPaths); err != nil {
+		return -3, err
+
+	}
+	// 加载vendor
+	if runOptions.vendorPath != "" {
+		if err = modules.LoadVendor(runOptions.vendorPath); err != nil {
+			return -4, err
 		}
-		modules.SetLookup(ctx)
+	}
+
+	if runOptions.isDir || runOptions.isArchive {
+		// 读取go.mod
+		if err = modules.LoadGoMod(mod.GetModPath(runOptions.projectDir)); err != nil {
+			return -5, err
+		}
 
 		// 检查目录下是否有gop文件
 		if containsExt(runOptions.projectDir, ".gop") {
 			if containsSubModules(runOptions.projectDir) {
-				return -4, fmt.Errorf("*.gop is not allowed in project mode with 3rd party modules")
+				return -6, fmt.Errorf("*.gop is not allowed in project mode with 3rd party modules")
 			}
 			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
 				return -4, err

@@ -13,18 +13,19 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.8.8](https://git
 ## Run Golang 
 
 ```
-igop run [Path] [-V | --debug] [--vendor path] [-I | --import NAME=PATH] -- [arguments...]
+igop run [Path] [-V | --debug] [--vendor path] [-I | --import NAME=PATH] [-p | --plugin] -- [arguments...]
 ```
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
 
-|                   | Values | Default       |                                                                          |
-|-------------------|--------|---------------|--------------------------------------------------------------------------|
-| [Path]            | string |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.       |
-| -V<br/>--debug    |        | false         | Print the debug information.                                             |
-| --vendor          | string | [Path]/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`. |
-| -I<br/>--import   |        |               | The package to be imported. `-I NAME=PATH -I NAME2=PATH2`.               |
-| -- [arguments...] |        |               | Script arguments.<br/>Be read `os.Args` in the script.                   |
+|                   | Type      | Default       |                                                                                                  |
+|-------------------|-----------|---------------|--------------------------------------------------------------------------------------------------|
+| [Path]            | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                               |
+| -V<br/>--debug    |           | false         | Print the debug information.                                                                     |
+| --vendor          | String    | [Path]/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                         |
+| -I<br/>--import   | Key=Value |               | The package to be imported. `-I NAME=PATH -I NAME2=PATH2`.                                       |
+| -p<br/>--plugin   | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/fly-studio/igop_plugins |
+| -- [arguments...] |           |               | Script arguments.<br/>Be read `os.Args` in the script.                                           |
 
 ### Single file mode
 
