@@ -15,20 +15,19 @@ type replOptions struct {
 	debug bool
 }
 
-func AddReplCmd(rootCmd *cobra.Command) {
-	var replOptions replOptions
+func ReplCmd() *cobra.Command {
+	var options replOptions
 
 	replCmd := &cobra.Command{
 		Use:   "repl",
 		Short: "run a go+ REPL " + env.Version(),
 		Run: func(cmd *cobra.Command, args []string) {
-			runRepl(replOptions)
+			runRepl(options)
 		},
 	}
 
-	replCmd.PersistentFlags().BoolVarP(&replOptions.debug, "debug", "V", false, "print debug information")
-
-	rootCmd.AddCommand(replCmd)
+	replCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "V", false, "print debug information")
+	return replCmd
 }
 
 // LinerUI implements repl.UI interface.
@@ -47,7 +46,7 @@ func (u *LinerUI) Printf(format string, a ...interface{}) {
 	fmt.Printf(format, a...)
 }
 
-func runRepl(replOptions replOptions) {
+func runRepl(options replOptions) {
 	fmt.Printf("iGo+ REPL %s\n", env.Version())
 	state := liner.NewLiner()
 	defer state.Close()
@@ -62,7 +61,7 @@ func runRepl(replOptions replOptions) {
 	})
 	ui := &LinerUI{state: state}
 	var mode igop.Mode
-	if replOptions.debug {
+	if options.debug {
 		mode |= igop.EnableDumpInstr | igop.EnableTracing
 	}
 

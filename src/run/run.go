@@ -24,15 +24,15 @@ type runOptions struct {
 	pluginPaths []string
 }
 
-func AddRunCmd(rootCmd *cobra.Command) {
-	var runOptions = runOptions{}
+func RunCmd() *cobra.Command {
+	var options = runOptions{}
 
 	runCmd := &cobra.Command{
 		Use:   "run [OPTIONS] [PATH] -- [SCRIPT ARGUMENTS...]",
 		Short: "Execute a Go+ script file, or a Golang project",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			code, err := igoRun(args[0], runOptions, args[1:])
+			code, err := igoRun(args[0], options, args[1:])
 			if err != nil {
 				fmt.Fprint(os.Stderr, err.Error())
 			}
@@ -42,12 +42,12 @@ func AddRunCmd(rootCmd *cobra.Command) {
 		},
 	}
 
-	runCmd.PersistentFlags().BoolVarP(&runOptions.debug, "debug", "V", false, "Print debug information")
-	runCmd.PersistentFlags().StringToStringVarP(&runOptions.importPaths, "import", "I", map[string]string{}, "The package to be imported, -I NAME=PATH -I NAME2=PATH2")
-	runCmd.PersistentFlags().StringVar(&runOptions.vendorPath, "vendor", "", "The path of vendor, default: [PATH]/vendor")
-	runCmd.PersistentFlags().StringArrayVarP(&runOptions.pluginPaths, "plugin", "p", nil, "the golang plugin path (only for linux)")
+	runCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "V", false, "Print debug information")
+	runCmd.PersistentFlags().StringToStringVarP(&options.importPaths, "import", "I", map[string]string{}, "The package to be imported, -I NAME=PATH -I NAME2=PATH2")
+	runCmd.PersistentFlags().StringVar(&options.vendorPath, "vendor", "", "The path of vendor, default: [PATH]/vendor")
+	runCmd.PersistentFlags().StringArrayVarP(&options.pluginPaths, "plugin", "p", nil, "the golang plugin path (only for linux)")
 	runCmd.MarkPersistentFlagDirname("vendor")
-	rootCmd.AddCommand(runCmd)
+	return runCmd
 }
 
 func gopBuildDir(ctx *igop.Context, path string) error {
@@ -111,73 +111,73 @@ func buildOptions(path string, options *runOptions) error {
 	return nil
 }
 
-func igoRun(path string, runOptions runOptions, args []string) (int, error) {
+func igoRun(path string, options runOptions, args []string) (int, error) {
 	// 删除解压的文件夹
 	defer func() {
-		if runOptions.isArchive {
-			os.RemoveAll(runOptions.projectDir)
+		if options.isArchive {
+			os.RemoveAll(options.projectDir)
 		}
 	}()
 
 	var err error
 	var code int
 	var mode = igop.EnablePrintAny
-	if runOptions.debug {
+	if options.debug {
 		mode |= igop.EnableTracing | igop.EnableDumpImports | igop.EnableDumpInstr
 	}
 
 	// 解压、预读modules
-	if err = buildOptions(path, &runOptions); err != nil {
+	if err = buildOptions(path, &options); err != nil {
 		return -1, err
 	}
 
 	ctx := igop.NewContext(mode)
 
-	for k, v := range runOptions.importPaths {
+	for k, v := range options.importPaths {
 		if err = ctx.AddImport(k, v); err != nil {
 			return -2, err
 		}
-		if runOptions.debug {
+		if options.debug {
 			fmt.Printf("# imported package [%s]%s\n", k, v)
 		}
 	}
 
-	modules := mod.NewModules(runOptions.projectDir)
+	modules := mod.NewModules(options.projectDir)
 	modules.SetLookup(ctx)
 	// 加载plugins
-	if err = modules.LoadPlugins(runOptions.pluginPaths); err != nil {
+	if err = modules.LoadPlugins(options.pluginPaths); err != nil {
 		return -3, err
 
 	}
 	// 加载vendor
-	if runOptions.vendorPath != "" {
-		if err = modules.LoadVendor(runOptions.vendorPath); err != nil {
+	if options.vendorPath != "" {
+		if err = modules.LoadVendor(options.vendorPath); err != nil {
 			return -4, err
 		}
 	}
 
-	if runOptions.isDir || runOptions.isArchive {
+	if options.isDir || options.isArchive {
 		// 读取go.mod
-		if err = modules.LoadGoMod(mod.GetModPath(runOptions.projectDir)); err != nil {
+		if err = modules.LoadGoMod(mod.GetModPath(options.projectDir)); err != nil {
 			return -5, err
 		}
 
 		// 检查目录下是否有gop文件
-		if containsExt(runOptions.projectDir, ".gop") {
-			if containsSubModules(runOptions.projectDir) {
+		if containsExt(options.projectDir, ".gop") {
+			if containsSubModules(options.projectDir) {
 				return -6, fmt.Errorf("*.gop is not allowed in project mode with 3rd party modules")
 			}
-			if err = gopBuildDir(ctx, runOptions.projectDir); err != nil {
+			if err = gopBuildDir(ctx, options.projectDir); err != nil {
 				return -4, err
 			}
 		}
-		code, err = ctx.Run(runOptions.projectDir, args)
+		code, err = ctx.Run(options.projectDir, args)
 	} else {
 		//var buf []byte
-		//if buf, err = os.ReadFile(runOptions.path); err != nil {
+		//if buf, err = os.ReadFile(options.path); err != nil {
 		//	return err
 		//}
-		code, err = ctx.RunFile(runOptions.path, nil, args)
+		code, err = ctx.RunFile(options.path, nil, args)
 	}
 
 	if err != nil {
