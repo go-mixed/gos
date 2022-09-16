@@ -1,6 +1,6 @@
 # iGo+
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.0](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.1](https://github.com/goplus/igop)
 
 ## ✨ Features
 
@@ -9,6 +9,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.0](https://git
 - Run a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
 - Supported shebang lines, like `#!/usr/bin/igop`
 - Go+ Read-Eval-Print-Loop
+- **Support Go1.18 Go1.19 generics**
 
 ## TOC
 
