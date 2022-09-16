@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/c4milo/unpackit v0.1.0
 	github.com/goplus/gop v1.1.3
-	github.com/goplus/igop v0.9.1
+	github.com/goplus/igop v0.9.2
 	github.com/goplus/ipkg v0.1.3
 	github.com/goplus/reflectx v0.9.6
 	github.com/inconshreveable/mousetrap v1.0.1
@@ -18,21 +18,21 @@ require (
 
 require (
 	github.com/dsnet/compress v0.0.1 // indirect
-	github.com/goplus/gox v1.11.22 // indirect
+	github.com/goplus/gox v1.11.21 // indirect
 	github.com/goplus/mod v0.9.12 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.4.1 // indirect
+	github.com/klauspost/cpuid v1.2.0 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
-	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mattn/go-runewidth v0.0.3 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/petermattis/goid v0.0.0-20220824145935-af5520614cb6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/qiniu/x v1.11.9 // indirect
-	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/visualfc/funcval v0.1.3 // indirect
-	github.com/visualfc/goembed v0.3.0 // indirect
+	github.com/visualfc/goembed v0.3.1 // indirect
 	github.com/visualfc/xtype v0.1.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/tools v0.1.12 // indirect
 )
