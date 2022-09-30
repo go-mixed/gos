@@ -2,28 +2,32 @@
 
 Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.2](https://github.com/goplus/igop)
 
-## ✨ Features
-
-- Run a Go+ script file, or a Golang file
-- Run a Golang project (3<sup>rd</sup> party modules require a vendor directory)
-- Run a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
-- Supported shebang lines, like `#!/usr/bin/igop`
+## ✨ Feature highlights
+- Run the Golang project **WITHOUT** [Golang compiler](https://go.dev/dl/)(142MB)
+- Only 25MB after built and [UPX](https://github.com/upx/upx)
+- Real time & Run：
+  - Go+ script file, or a Golang file
+  - Golang project (3<sup>rd</sup> party modules require a vendor directory)
+  - a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
+- Support shebang lines, like `#!/usr/bin/igop`
 - Go+ Read-Eval-Print-Loop
-- **Supported Go1.18 Go1.19 generics**
+- **Go1.18, Go1.19 generics**
 
 ## TOC
 
-- [Run Golang file](#-run-golang-file)
+- igop run: run golang files
+  - [Usage](#-run-golang-files)
   - [Single file mode](#single-file-mode)
   - [Project mode](#project-mode)
     - [Without submodules, 3<sup>rd</sup> party modules](#without-submodules-3suprdsup-party-modules)
     - [With submodules, 3<sup>rd</sup> party modules](#with-submodules-or-3suprdsup-party-modules)
   - [Archive mode](#archive-mode)
-- [Execute script code](#-execute-script-code)
-- [REPL](#repl)
-- [Run as executable file like ./script.sh](#run-as-executable-file-of-sh)
+- igop exec: execute script code
+  - [Usage](#-execute-script-code)
+- igop repl: [REPL](#repl)
+- bash ./script.sh: [run as shell file](#run-as-shell-file-like-sh)
 
-## ⌛ Run Golang file 
+## ⌛ Run Golang files 
 
 ```
 igop run <PATH> [-V | --debug] [--vendor <path>] [-I | --import NAME=PATH] [-p | --plugin <path>] -- <script arguments>
@@ -34,11 +38,11 @@ Run a [Go+ script](https://goplus.org/), or a Golang project
 |                        | Type      | Default       |                                                                                                  |
 |------------------------|-----------|---------------|--------------------------------------------------------------------------------------------------|
 | <PATH>                 | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                               |
-| -V<br/>--debug         |           | false         | Print the debug information.                                                                     |
+| -V<br/>--debug         | Boolean   | false         | Print the debug information.                                                                     |
 | --vendor               | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                         |
 | -I<br/>--import        | NAME=PATH |               | The package to be imported. `-I NAME=PATH -I NAME2=PATH2`.                                       |
 | -p<br/>--plugin <path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/fly-studio/igop_plugins |
-| -- <script arguments>  |           |               | Script arguments.<br/>Be read `os.Args` in the script.                                           |
+| -- \<script arguments> |           |               | Script arguments.<br/>Be read `os.Args` in the script.                                           |
 
 ### Single file mode
 
@@ -82,7 +86,7 @@ $ igop run /path/to/file.go
 - The package MUST be `package main` in all `.go` files 
 - Included `func main()` in anyone `.go` file, or ONLY one `.gop` file
 - No sub-folder. even if the sub-folders are present, they will be ignored
-- Supported Go/Go+ hybrid programming
+- Support Go/Go+ hybrid programming
 
 ```
 /path/to/
@@ -147,7 +151,7 @@ $ go mod vendor
 
 This is a convenient way that a packaging of project mode
 
-Supported archive format. 
+Support archive format. 
 
 - tar.gz
 - tar.bzip2
@@ -218,11 +222,11 @@ igop exec [-s | --script <code>] [--debug] -- <script arguments>
 ```
 Execute script code from **StdIn** or the argument of "--script"
 
-|                        | Type   | Default |                                                        |
-|------------------------|--------|---------|--------------------------------------------------------|
-| -V<br/>--debug         |        | false   | Print the debug information.                           |
-| -s<br/>--script <code> | String |         | The Golang/Go+ script as string                        |
-| -- <script arguments>  |        |         | Script arguments.<br/>Be read `os.Args` in the script. |
+|                         | Type   | Default |                                                        |
+|-------------------------|--------|---------|--------------------------------------------------------|
+| -V<br/>--debug          |        | false   | Print the debug information.                           |
+| -s<br/>--script \<code> | String |         | The Golang/Go+ script as string                        |
+| -- \<script arguments>  |        |         | Script arguments.<br/>Be read `os.Args` in the script. |
 
 ### Example
 
@@ -255,7 +259,7 @@ Online: [https://repl.goplus.org/](https://repl.goplus.org/)
 
 ![](docs/repl_examples.png)
 
-## Run as executable file of "*.sh"
+## Run as shell file, like "*.sh"
 
 script.sh
 ```
