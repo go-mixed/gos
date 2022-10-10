@@ -82,7 +82,7 @@ func buildOptions(path string, options *runOptions) error {
 		}
 		defer f.Close()
 		options.projectDir = filepath.Join(filepath.Dir(options.path), "__"+filepath.Base(options.path)+"__")
-		if _, err = unpackit.Unpack(f, options.projectDir); err != nil {
+		if err = unpackit.Unpack(f, options.projectDir); err != nil {
 			return err
 		}
 		options.isArchive = true
