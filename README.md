@@ -9,7 +9,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.2](https://git
   - Go+ script file, or a Golang file
   - Golang project (3<sup>rd</sup> party modules require a vendor directory)
   - a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
-- Support shebang lines, like `#!/usr/bin/igop`
+- Support shebang line, like `#!/usr/bin/bash`
 - Go+ Read-Eval-Print-Loop
 - **Go1.18, Go1.19 generics**
 
@@ -261,10 +261,12 @@ Online: [https://repl.goplus.org/](https://repl.goplus.org/)
 
 ## Run as shell file, like "*.sh"
 
+Shebang line:
+
 script.sh
 ```
-#!/usr/bin/igop run
-///usr/bin/true; exec /usr/bin/igop run "$0" "$@"
+#!/usr/bin/env -S /usr/bin/igop run --
+///usr/bin/true; exec /usr/bin/igop run -- "$0" "$@"
 
 import "os"
 import "fmt"
@@ -278,9 +280,8 @@ Run
 ```
 $ chmod +x ./script.sh
 
-# use -- to pass arguments to the script
-$ ./scrpit.sh -- --argument1 --argument2
-$ sh ./script.sh -- --argument1 --argument2
+$ ./scrpit.sh --argument1 --argument2
+$ sh ./script.sh --argument1 --argument2
 ```
 
 Print
