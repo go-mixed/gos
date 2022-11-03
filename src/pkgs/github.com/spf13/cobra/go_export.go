@@ -1,8 +1,5 @@
 // export by github.com/goplus/igop/cmd/qexp
 
-//go:build go1.19
-// +build go1.19
-
 package cobra
 
 import (
@@ -42,11 +39,13 @@ func init() {
 			"Command":            reflect.TypeOf((*q.Command)(nil)).Elem(),
 			"CompletionOptions":  reflect.TypeOf((*q.CompletionOptions)(nil)).Elem(),
 			"FParseErrWhitelist": reflect.TypeOf((*q.FParseErrWhitelist)(nil)).Elem(),
+			"Group":              reflect.TypeOf((*q.Group)(nil)).Elem(),
 			"PositionalArgs":     reflect.TypeOf((*q.PositionalArgs)(nil)).Elem(),
 			"ShellCompDirective": reflect.TypeOf((*q.ShellCompDirective)(nil)).Elem(),
 		},
 		AliasTypes: map[string]reflect.Type{},
 		Vars: map[string]reflect.Value{
+			"EnableCaseInsensitive":    reflect.ValueOf(&q.EnableCaseInsensitive),
 			"EnableCommandSorting":     reflect.ValueOf(&q.EnableCommandSorting),
 			"EnablePrefixMatching":     reflect.ValueOf(&q.EnablePrefixMatching),
 			"MousetrapDisplayDuration": reflect.ValueOf(&q.MousetrapDisplayDuration),
@@ -77,6 +76,7 @@ func init() {
 			"MinimumNArgs":        reflect.ValueOf(q.MinimumNArgs),
 			"NoArgs":              reflect.ValueOf(q.NoArgs),
 			"NoFileCompletions":   reflect.ValueOf(q.NoFileCompletions),
+			"OnFinalize":          reflect.ValueOf(q.OnFinalize),
 			"OnInitialize":        reflect.ValueOf(q.OnInitialize),
 			"OnlyValidArgs":       reflect.ValueOf(q.OnlyValidArgs),
 			"RangeArgs":           reflect.ValueOf(q.RangeArgs),
@@ -95,6 +95,7 @@ func init() {
 			"BashCompFilenameExt":       {"untyped string", constant.MakeString(string(q.BashCompFilenameExt))},
 			"BashCompOneRequiredFlag":   {"untyped string", constant.MakeString(string(q.BashCompOneRequiredFlag))},
 			"BashCompSubdirsInDir":      {"untyped string", constant.MakeString(string(q.BashCompSubdirsInDir))},
+			"FlagSetByCobraAnnotation":  {"untyped string", constant.MakeString(string(q.FlagSetByCobraAnnotation))},
 			"ShellCompNoDescRequestCmd": {"untyped string", constant.MakeString(string(q.ShellCompNoDescRequestCmd))},
 			"ShellCompRequestCmd":       {"untyped string", constant.MakeString(string(q.ShellCompRequestCmd))},
 		},

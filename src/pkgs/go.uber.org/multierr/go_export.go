@@ -1,8 +1,5 @@
 // export by github.com/goplus/igop/cmd/qexp
 
-//go:build go1.19
-// +build go1.19
-
 package multierr
 
 import (
