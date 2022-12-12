@@ -1,6 +1,6 @@
 # iGo+
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.3](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.6](https://github.com/goplus/igop)
 
 ## ✨ Feature highlights
 - Run the Golang project **WITHOUT** [Golang compiler](https://go.dev/dl/)(142MB)

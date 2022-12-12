@@ -15,7 +15,6 @@ func init() {
 		Name: "mousetrap",
 		Path: "github.com/inconshreveable/mousetrap",
 		Deps: map[string]string{
-			"os":      "os",
 			"syscall": "syscall",
 			"unsafe":  "unsafe",
 		},
