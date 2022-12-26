@@ -24,7 +24,7 @@ func ReplCmd() *cobra.Command {
 		Use:   "repl",
 		Short: "run a go+ REPL " + env.Version(),
 		Run: func(cmd *cobra.Command, args []string) {
-			runRepl(options)
+			igopRepl(options)
 		},
 	}
 
@@ -48,7 +48,7 @@ func (u *LinerUI) Printf(format string, a ...interface{}) {
 	fmt.Printf(format, a...)
 }
 
-func runRepl(options replOptions) {
+func igopRepl(options replOptions) {
 	fmt.Printf("iGo+ REPL %s\n", env.Version())
 	state := liner.NewLiner()
 	defer state.Close()

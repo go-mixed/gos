@@ -32,7 +32,7 @@ func RunCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			options.path = args[0]
-			code, err := igoRun(options, args[1:])
+			code, err := igopRun(options, args[1:])
 			if err != nil {
 				fmt.Fprint(os.Stderr, err.Error())
 			}
@@ -100,7 +100,7 @@ func initialPath(options runCmdOptions) (runCmdOptions, error) {
 	return options, nil
 }
 
-func igoRun(options runCmdOptions, args []string) (int, error) {
+func igopRun(options runCmdOptions, args []string) (int, error) {
 	var err error
 	if options, err = initialPath(options); err != nil {
 		return -11, err

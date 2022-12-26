@@ -26,7 +26,7 @@ func ExecCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			options.scriptIsSet = cmd.PersistentFlags().Changed("script")
 
-			code, err := igoExec(options, args)
+			code, err := igopExec(options, args)
 			if err != nil {
 				fmt.Fprint(os.Stderr, err.Error())
 			}
@@ -40,7 +40,7 @@ func ExecCmd() *cobra.Command {
 	return execCmd
 }
 
-func igoExec(options execCmdOptions, args []string) (int, error) {
+func igopExec(options execCmdOptions, args []string) (int, error) {
 	var content []byte
 
 	if options.scriptIsSet {

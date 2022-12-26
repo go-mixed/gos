@@ -43,16 +43,36 @@ func NewContext(projectPath string, debug bool) *Context {
 		mode |= igop.EnableTracing | igop.EnableDumpImports | igop.EnableDumpInstr
 	}
 
-	var m = &Context{
+	var ctx = &Context{
 		Context: igop.NewContext(mode),
 		modules: map[string]*Module{},
 		path:    canonicalize(projectPath),
 		debug:   debug,
 	}
 
-	m.Context.Lookup = m.lookup
+	ctx.Context.Lookup = ctx.lookup
 
-	return m
+	return ctx
+}
+
+func (ctx *Context) GetPath() string {
+	return ctx.path
+}
+
+func (ctx *Context) IsDebug() bool {
+	return ctx.debug
+}
+
+func (ctx *Context) GetIgop() *igop.Context {
+	return ctx.Context
+}
+
+func (ctx *Context) GetMainPackage() *ssa.Package {
+	return ctx.mainPackage
+}
+
+func (ctx *Context) GetModules() map[string]*Module {
+	return ctx.modules
 }
 
 func (ctx *Context) RunMain(args []string) (int, error) {
@@ -88,8 +108,8 @@ func (ctx *Context) Build() error {
 	isDir := false
 	if stat, err := os.Stat(ctx.path); err != nil {
 		return err
-	} else if stat.IsDir() {
-		isDir = true
+	} else {
+		isDir = stat.IsDir()
 	}
 
 	if isDir {
@@ -108,9 +128,7 @@ func (ctx *Context) Build() error {
 			}
 		}
 
-		if ctx.mainPackage, err = ctx.LoadDir(ctx.path, false); err != nil {
-			return err
-		}
+		ctx.mainPackage, err = ctx.LoadDir(ctx.path, false)
 	} else {
 		_path := ctx.path
 		ext := filepath.Ext(_path)
@@ -130,12 +148,10 @@ func (ctx *Context) Build() error {
 			buf[1] = '/'
 		}
 
-		if ctx.mainPackage, err = ctx.LoadFile(_path, buf); err != nil {
-			return err
-		}
+		ctx.mainPackage, err = ctx.LoadFile(_path, buf)
 	}
 
-	return nil
+	return err
 }
 
 func (ctx *Context) resortKeys() {
