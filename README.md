@@ -19,8 +19,8 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.6](https://git
   - [Usage](#-run-golang-files)
   - [Single file mode](#single-file-mode)
   - [Project mode](#project-mode)
-    - [Without submodules, 3<sup>rd</sup> party modules](#without-submodules-3suprdsup-party-modules)
-    - [With submodules, 3<sup>rd</sup> party modules](#with-submodules-or-3suprdsup-party-modules)
+    - [Without submodules, 3<sup>rd</sup> party modules](#without-submodules-3rd-party-modules)
+    - [With submodules, 3<sup>rd</sup> party modules](#with-submodules-or-3rd-party-modules)
   - [Archive mode](#archive-mode)
 - igop exec: execute script code
   - [Usage](#-execute-script-code)
@@ -30,19 +30,19 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.6](https://git
 ## ⌛ Run Golang files 
 
 ```
-igop run <PATH> [-V | --debug] [--vendor <path>] [-I | --import NAME=PATH] [-p | --plugin <path>] -- <script arguments>
+igop run <PATH> [-V | --debug] [--vendor <path>] [-I | --import NAME=PATH] [-p | --plugin <path>] -- <arguments>
 ```
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
 
-|                        | Type      | Default       |                                                                                                  |
-|------------------------|-----------|---------------|--------------------------------------------------------------------------------------------------|
-| <PATH>                 | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                               |
-| -V<br/>--debug         | Boolean   | false         | Print the debug information.                                                                     |
-| --vendor               | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                         |
-| -I<br/>--import        | NAME=PATH |               | The package to be imported. `-I NAME=PATH -I NAME2=PATH2`.                                       |
-| -p<br/>--plugin <path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/fly-studio/igop_plugins |
-| -- \<script arguments> |           |               | Script arguments.<br/>Be read `os.Args` in the script.                                           |
+|                         | Type      | Default       |                                                                                                  |
+|-------------------------|-----------|---------------|--------------------------------------------------------------------------------------------------|
+| <PATH>                  | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                               |
+| -V<br/>--debug          | Boolean   | false         | Print the debug information.                                                                     |
+| --vendor                | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                         |
+| -I<br/>--import         | NAME=PATH |               | The package to be imported. `-I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`.                       |
+| -p<br/>--plugin \<path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/fly-studio/igop_plugins |
+| -- \<arguments>         |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                       |
 
 ### Single file mode
 
@@ -222,11 +222,11 @@ igop exec [-s | --script <code>] [--debug] -- <script arguments>
 ```
 Execute script code from **StdIn** or the argument of "--script"
 
-|                         | Type   | Default |                                                        |
-|-------------------------|--------|---------|--------------------------------------------------------|
-| -V<br/>--debug          |        | false   | Print the debug information.                           |
-| -s<br/>--script \<code> | String |         | The Golang/Go+ script as string                        |
-| -- \<script arguments>  |        |         | Script arguments.<br/>Be read `os.Args` in the script. |
+|                         | Type   | Default |                                                            |
+|-------------------------|--------|---------|------------------------------------------------------------|
+| -V<br/>--debug          |        | false   | Print the debug information.                               |
+| -s<br/>--script \<code> | String |         | The Golang/Go+ script as string                            |
+| -- \<arguments>         |        |         | arguments for script.<br/>Be read `os.Args` in the script. |
 
 ### Example
 
@@ -265,7 +265,6 @@ Shebang line:
 
 script.sh
 ```
-#!/usr/bin/env -S /usr/bin/igop run --
 ///usr/bin/true; exec /usr/bin/igop run -- "$0" "$@"
 
 import "os"
