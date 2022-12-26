@@ -10,7 +10,7 @@ import (
 	"io"
 	"strings"
 
-	_ "github.com/fly-studio/igop/src/mod"
+	_ "github.com/fly-studio/igop/mod"
 )
 
 type replOptions struct {

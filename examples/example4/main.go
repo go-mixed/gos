@@ -1,11 +1,11 @@
-package example4
+package main
 
 import (
 	"fmt"
 	"golang.org/x/image/math/f64"
 )
 
-// igop run -p /path/to/igop_pluginx_x.so example4
+// igop run -p /path/to/igop_pluginx_x.so examples/example4
 
 func main() {
 	fmt.Printf("--from plugin--\n")

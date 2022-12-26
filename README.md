@@ -59,7 +59,7 @@ The difference is that they have different **Working directories**
 
 Similarly hereinafter.
 
-> See [Example2/1.go](example2/1.gop)
+> See [examples/example2/1.go](examples/example2/1.gop)
 
 #### Run a file with `*.go`
 
@@ -73,7 +73,7 @@ func main() {
 }
 ```
 
-> See [Example2/2.go](example2/2.go)
+> See [examples/example2/2.go](examples/example2/2.go)
 
 ```
 $ igop run /path/to/file.go 
@@ -95,7 +95,7 @@ $ igop run /path/to/file.go
  - main.go
 ```
 
-> ONLY allowed one `func main(){}`, Whether in the *.gop or *.go, See [Example3](example3)
+> ONLY allowed one `func main(){}`, Whether in the *.gop or *.go, See [examples/example3](examples/example3)
 
 Run
 
@@ -128,7 +128,7 @@ MUST include these files
     - modules.txt
 ```
 
-> See [Example1/](example1)
+> See [examples/example1/](examples/example1)
 
 #### - go.mod
 
@@ -159,7 +159,7 @@ Support archive format.
 - zip
 - tar
 
-> See [Example1/example1.tar.gz](example1/example1.tar.gz)
+> See [examples/example1.tar.gz](examples/example5.tar.gz)
 
 When it's running, it's actually being extract to `example1/__example1.tar.gz__`
 

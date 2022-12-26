@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/fly-studio/igop/src/exec"
-	"github.com/fly-studio/igop/src/repl"
-	"github.com/fly-studio/igop/src/run"
+	"github.com/fly-studio/igop/cmd/exec"
+	"github.com/fly-studio/igop/cmd/repl"
+	"github.com/fly-studio/igop/cmd/run"
 	"github.com/spf13/cobra"
 )
 

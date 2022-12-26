@@ -8,7 +8,7 @@ import (
 	"plugin"
 )
 
-func (m *Modules) LoadPlugins(plugins []string) error {
+func (ctx *Context) LoadPlugins(plugins []string) error {
 	for _, path := range plugins {
 		p, err := plugin.Open(path)
 		if err != nil {

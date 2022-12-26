@@ -8,17 +8,17 @@ import (
 	"io"
 	"os"
 
-	_ "github.com/fly-studio/igop/src/mod"
+	_ "github.com/fly-studio/igop/mod"
 )
 
-type execOptions struct {
+type execCmdOptions struct {
 	debug       bool
 	script      string
 	scriptIsSet bool
 }
 
 func ExecCmd() *cobra.Command {
-	var options = execOptions{}
+	var options = execCmdOptions{}
 
 	execCmd := &cobra.Command{
 		Use:   "exec [-s | --script <code>] -- <script arguments>",
@@ -40,7 +40,7 @@ func ExecCmd() *cobra.Command {
 	return execCmd
 }
 
-func igoExec(options execOptions, args []string) (int, error) {
+func igoExec(options execCmdOptions, args []string) (int, error) {
 	var content []byte
 
 	if options.scriptIsSet {
