@@ -11,10 +11,10 @@ import (
 )
 
 import (
+	_ "github.com/fly-studio/igop/src/pkgs"
 	_ "github.com/goplus/igop/pkg"
 	_ "github.com/goplus/ipkg/github.com/modern-go/reflect2"
 	_ "github.com/goplus/reflectx/icall/icall8192"
-	_ "igop/src/pkgs"
 
 	_ "github.com/goplus/igop/gopbuild" // 注册gop后缀
 )

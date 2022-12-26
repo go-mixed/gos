@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	_ "igop/src/mod"
+	_ "github.com/fly-studio/igop/src/mod"
 )
 
 type execOptions struct {

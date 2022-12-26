@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/fly-studio/igop/src/exec"
+	"github.com/fly-studio/igop/src/repl"
+	"github.com/fly-studio/igop/src/run"
 	"github.com/spf13/cobra"
-	"igop/src/exec"
-	"igop/src/repl"
-	"igop/src/run"
 )
 
 func main() {

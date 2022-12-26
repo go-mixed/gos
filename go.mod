@@ -1,4 +1,4 @@
-module igop
+module github.com/fly-studio/igop
 
 go 1.19
 
