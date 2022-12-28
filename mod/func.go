@@ -3,6 +3,7 @@ package mod
 import (
 	"github.com/goplus/igop"
 	"github.com/goplus/igop/gopbuild"
+	"github.com/pkg/errors"
 	"golang.org/x/tools/go/ssa"
 	"os"
 	"path/filepath"
@@ -56,9 +57,9 @@ func containsSubModules(projectPath string) bool {
 func gopBuildDir(ctx *igop.Context, path string) error {
 	data, err := gopbuild.BuildDir(ctx, path)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
-	return os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666)
+	return errors.WithStack(os.WriteFile(filepath.Join(path, "gop_autogen.go"), data, 0666))
 }
 
 func isMainPkg(pkg *ssa.Package) bool {

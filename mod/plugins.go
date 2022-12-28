@@ -4,7 +4,7 @@
 package mod
 
 import (
-	"fmt"
+	"github.com/pkg/errors"
 	"plugin"
 )
 
@@ -16,7 +16,7 @@ func (ctx *Context) LoadPlugins(plugins []string) error {
 		}
 		loadFunc, err := p.Lookup("Load")
 		if err != nil {
-			return fmt.Errorf("func \"Load\" not found in plugin \"%s\": %w", path, err)
+			return errors.Wrapf(err, "func \"Load\" not found in plugin \"%s\"", path)
 		}
 		loadFunc.(func())()
 	}

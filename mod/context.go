@@ -3,6 +3,7 @@ package mod
 import (
 	"fmt"
 	"github.com/goplus/igop"
+	"github.com/pkg/errors"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/ssa"
 	"os"
@@ -209,15 +210,15 @@ func (ctx *Context) LoadModule(moduleName string, path string) error {
 func (ctx *Context) parseGoMod(goModPath string) error {
 	data, err := os.ReadFile(goModPath)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	f, err := modfile.Parse(goModPath, data, nil)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	if f.Module == nil {
 		// No module declaration. Must add module path.
-		return fmt.Errorf("no module declaration in go.mod. To specify the module path:\n\tgo mod edit -module=example.com/mod")
+		return errors.New("no module declaration in go.mod. To specify the module path:\n\tgo mod edit -module=example.com/mod")
 	}
 
 	goVersion, err := modFileGoVersion(f)
@@ -240,7 +241,7 @@ func (ctx *Context) parseGoMod(goModPath string) error {
 func (ctx *Context) parseVendor(vendorPath string) error {
 	vendorList, err := readVendorList(vendorPath)
 	if err != nil {
-		return fmt.Errorf("[Vendor]%w", err)
+		return errors.Wrapf(err, "[Vendor]")
 	}
 
 	for k, v := range vendorList.vendorMeta {

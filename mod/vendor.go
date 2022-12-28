@@ -1,8 +1,7 @@
 package mod
 
 import (
-	"errors"
-	"fmt"
+	"github.com/pkg/errors"
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
 	"io/fs"
@@ -42,9 +41,9 @@ func readVendorList(vendorPath string) (*VendorList, error) {
 	data, err := os.ReadFile(filepath.Join(vendorPath, "modules.txt"))
 	if err != nil {
 		if !errors.Is(err, fs.ErrNotExist) {
-			return nil, fmt.Errorf("go: %s", err)
+			return nil, errors.Errorf("go: %s", err)
 		}
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	var mod module.Version

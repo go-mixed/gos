@@ -1,7 +1,7 @@
 package mod
 
 import (
-	"fmt"
+	"github.com/pkg/errors"
 	"go/build"
 	"golang.org/x/mod/modfile"
 	"path/filepath"
@@ -35,7 +35,7 @@ func latestGoVersion() (string, error) {
 	tags := build.Default.ReleaseTags
 	version := tags[len(tags)-1]
 	if !strings.HasPrefix(version, "go") || !modfile.GoVersionRE.MatchString(version[2:]) {
-		return "", fmt.Errorf("go: internal error: unrecognized default version %q", version)
+		return "", errors.Errorf("go: internal error: unrecognized default version %q", version)
 	}
 	return version[2:], nil
 }
