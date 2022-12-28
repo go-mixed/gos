@@ -122,7 +122,7 @@ func (ctx *Context) Build() error {
 		// 检查目录下是否有gop文件
 		if containsExt(ctx.path, ".gop") {
 			if containsSubModules(ctx.path) {
-				return fmt.Errorf("*.gop is not allowed in project mode with 3rd party modules")
+				return errors.New("*.gop is not allowed in project mode with 3rd party modules")
 			}
 			if err = gopBuildDir(ctx.Context, ctx.path); err != nil {
 				return err
@@ -135,7 +135,7 @@ func (ctx *Context) Build() error {
 		ext := filepath.Ext(_path)
 		var buf []byte
 		if buf, err = os.ReadFile(_path); err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		// 修改后缀
@@ -152,7 +152,7 @@ func (ctx *Context) Build() error {
 		ctx.mainPackage, err = ctx.LoadFile(_path, buf)
 	}
 
-	return err
+	return errors.WithStack(err)
 }
 
 func (ctx *Context) resortKeys() {
