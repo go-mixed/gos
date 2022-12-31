@@ -30,7 +30,12 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.6](https://git
 ## ⌛ Run Golang files 
 
 ```
-igop run <PATH> [-V | --debug] [--vendor <path>] [-I | --import NAME=PATH] [-p | --plugin <path>] -- <arguments>
+igop run <PATH> 
+  [-V | --debug] 
+  [--vendor <path>] 
+  [-I | --import NAME=PATH] 
+  [-p | --plugin <path>] 
+  -- <arguments>
 ```
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
@@ -218,7 +223,10 @@ $ igop run examples2/2.go -- --abc 123 --def
 
 ## ⚡ Execute script code
 ```
-igop exec [-s | --script <code>] [--debug] -- <script arguments>
+igop exec 
+  [-s | --script <code>] 
+  [--debug] 
+  -- <script arguments>
 ```
 Execute script code from **StdIn** or the argument of "--script"
 

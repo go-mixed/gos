@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	_ "github.com/fly-studio/igop/mod"
+	_ "gopkg.in/go-mixed/igop.v1/mod"
 )
 
 type execCmdOptions struct {

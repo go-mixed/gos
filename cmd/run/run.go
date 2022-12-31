@@ -3,9 +3,9 @@ package run
 import (
 	"fmt"
 	"github.com/c4milo/unpackit"
-	"github.com/fly-studio/igop/mod"
 	"github.com/spf13/cobra"
 	"go.uber.org/multierr"
+	"gopkg.in/go-mixed/igop.v1/mod"
 	"os"
 	"path/filepath"
 	"strings"

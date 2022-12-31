@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/fly-studio/igop/cmd/exec"
-	"github.com/fly-studio/igop/cmd/repl"
-	"github.com/fly-studio/igop/cmd/run"
 	"github.com/spf13/cobra"
+	"gopkg.in/go-mixed/igop.v1/cmd/exec"
+	"gopkg.in/go-mixed/igop.v1/cmd/repl"
+	"gopkg.in/go-mixed/igop.v1/cmd/run"
 )
 
 func main() {
