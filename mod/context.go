@@ -155,6 +155,10 @@ func (ctx *Context) Build() error {
 	return errors.WithStack(err)
 }
 
+func (ctx *Context) BuildInterp() (*igop.Interp, error) {
+	return ctx.NewInterp(ctx.GetMainPackage())
+}
+
 func (ctx *Context) resortKeys() {
 	for k := range ctx.modules {
 		ctx.rKeys = append(ctx.rKeys, k)
