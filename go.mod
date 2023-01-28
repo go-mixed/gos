@@ -1,4 +1,4 @@
-module github.com/fly-studio/igop
+module gopkg.in/go-mixed/igop.v1
 
 go 1.19
 

@@ -6,10 +6,10 @@ qexp -outdir . -filename go_export github.com/inconshreveable/mousetrap github.c
 */
 
 import (
-	_ "github.com/fly-studio/igop/pkgs/github.com/inconshreveable/mousetrap"
-	_ "github.com/fly-studio/igop/pkgs/github.com/pkg/errors"
-	_ "github.com/fly-studio/igop/pkgs/github.com/spf13/cobra"
-	_ "github.com/fly-studio/igop/pkgs/github.com/spf13/pflag"
-	_ "github.com/fly-studio/igop/pkgs/go.uber.org/multierr"
-	_ "github.com/fly-studio/igop/pkgs/gopkg.in/yaml.v3"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/github.com/inconshreveable/mousetrap"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/github.com/pkg/errors"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/github.com/spf13/cobra"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/github.com/spf13/pflag"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/go.uber.org/multierr"
+	_ "gopkg.in/go-mixed/igop.v1/pkgs/gopkg.in/yaml.v3"
 )
