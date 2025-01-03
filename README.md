@@ -43,7 +43,8 @@ Run a [Go+ script](https://goplus.org/), or a Golang project
 | -V<br/>--debug  | Boolean   | false         | Print the debug information.                                                                   |
 | -- \<arguments> |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                     |
 
-Advanced options
+<details>
+  <summary>Advanced options</summary>
 - `--vendor`: The path of Golang dependency packages.
 
   `gos run . --vendor=/path/to/vendor`
@@ -57,7 +58,7 @@ Advanced options
   `gos run . --plugin /path/to/plugin1.so --plugin /path/to/plugin2.so`
 
   See https://github.com/go-mixed/gops_plugins
-
+</details>
 
 ### Single file mode
 
