@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	_ "gopkg.in/go-mixed/igop.v1/mod"
+	_ "gopkg.in/go-mixed/gos.v1/mod"
 )
 
 type execCmdOptions struct {

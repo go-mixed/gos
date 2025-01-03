@@ -1,36 +1,37 @@
-# iGo+
+# Gos
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.9.6](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://github.com/goplus/igop)
 
 ## ✨ Feature highlights
 - Run the Golang project **WITHOUT** [Golang compiler](https://go.dev/dl/)(142MB)
 - Only 25MB after built and [UPX](https://github.com/upx/upx)
 - Real time & Run：
-  - Go+ script file, or a Golang file
-  - Golang project (3<sup>rd</sup> party modules require a vendor directory)
-  - a Golang project in the archive file of `*.tar.gz`, `*.tar.xz`, ...
+  - Go+ script file, 
+  - Golang file
+  - Golang project
+  - Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
 - Support shebang line, like `#!/usr/bin/bash`
 - Go+ Read-Eval-Print-Loop
-- **Go1.18, Go1.19 generics**
+- **Go1.18~1.22 generics**
 
 ## TOC
 
-- igop run: run golang files
+- gos run: run golang files
   - [Usage](#-run-golang-files)
   - [Single file mode](#single-file-mode)
   - [Project mode](#project-mode)
     - [Without submodules, 3<sup>rd</sup> party modules](#without-submodules-3rd-party-modules)
     - [With submodules, 3<sup>rd</sup> party modules](#with-submodules-or-3rd-party-modules)
   - [Archive mode](#archive-mode)
-- igop exec: execute script code
+- gos exec: execute script code
   - [Usage](#-execute-script-code)
-- igop repl: [REPL](#repl)
+- gos repl: [REPL](#repl)
 - bash ./script.sh: [run as shell file](#run-as-shell-file-like-sh)
 
 ## ⌛ Run Golang files 
 
 ```
-igop run <PATH> 
+gos run <PATH> 
   [-V | --debug] 
   [--vendor <path>] 
   [-I | --import NAME=PATH] 
@@ -40,25 +41,25 @@ igop run <PATH>
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
 
-|                         | Type      | Default       |                                                                                                  |
-|-------------------------|-----------|---------------|--------------------------------------------------------------------------------------------------|
-| <PATH>                  | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                               |
-| -V<br/>--debug          | Boolean   | false         | Print the debug information.                                                                     |
-| --vendor                | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                         |
-| -I<br/>--import         | NAME=PATH |               | The package to be imported. `-I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`.                       |
-| -p<br/>--plugin \<path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/fly-studio/igop_plugins |
-| -- \<arguments>         |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                       |
+|                         | Type      | Default       |                                                                                                |
+|-------------------------|-----------|---------------|------------------------------------------------------------------------------------------------|
+| <PATH>                  | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                             |
+| -V<br/>--debug          | Boolean   | false         | Print the debug information.                                                                   |
+| --vendor                | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                       |
+| -I<br/>--import         | NAME=PATH |               | The package to be imported. `-I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`.                     |
+| -p<br/>--plugin \<path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/go-mixed/gops_plugins |
+| -- \<arguments>         |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                     |
 
 ### Single file mode
 
 #### Run a file with `*.gop`
 
 ```
-$ igop run /path/to/file.gop 
+$ gos run /path/to/file.gop 
 
 # or
 $ cd /path/to
-$ igop run file.gop
+$ gos run file.gop
 ```
 The difference is that they have different **Working directories**
 
@@ -81,7 +82,7 @@ func main() {
 > See [examples/example2/2.go](examples/example2/2.go)
 
 ```
-$ igop run /path/to/file.go 
+$ gos run /path/to/file.go 
 ```
 
 ### Project mode
@@ -106,10 +107,10 @@ Run
 
 ```
 $ cd /path/to
-$ igop run .
+$ gos run .
 
 # or
-$ igop run /path/to
+$ gos run /path/to
 ```
 
 #### With submodules, or 3<sup>rd</sup> party modules 
@@ -146,7 +147,7 @@ $ go mod init your project-name
 #### - `vendor` directory
 
 Run this command to create the vendor directory, 
-`igop` need to load the modules from `vendor/modules.txt`
+`gos` need to load the modules from `vendor/modules.txt`
 
 ```
 $ go mod vendor
@@ -169,7 +170,7 @@ Support archive format.
 When it's running, it's actually being extract to `example1/__example1.tar.gz__`
 
 ```
-$ igop run examples1/example1.tar.gz --vendor vendor
+$ gos run examples1/example1.tar.gz --vendor vendor
 ```
 
 #### `vendor`, `import` path
@@ -183,7 +184,7 @@ Same with the PATH of `--import NAME=PATH`.
 Use the vendor with absolute path in OS
 
 ```
-$ igop run examples1/example1.tar.gz --vendor /path/to/vendor
+$ gos run examples1/example1.tar.gz --vendor /path/to/vendor
 ```
 
 ### Examples
@@ -192,38 +193,49 @@ $ igop run examples1/example1.tar.gz --vendor /path/to/vendor
 
 Project mode without modules
 ```
-$ igop run example3/
+# run in the anywhere
+$ gos run example3/
+```
 
+```
+# run in the working directory
 $ cd example3/
-$ igop run .
+$ gos run .
 ```
 
 
 Project mode with modules
 ```
-$ igop run example1/
+# "vendor" in example1/
+$ gos run example1/
+```
 
-$ igop run example1/ --vendor example1/vendor
+```
+# "vendor" in other path
+$ gos run example1/ --vendor example1/vendor
+```
 
+```
+# run in the working directory
 $ cd example1/
-$ igop run . --vendor vendor
+$ gos run . 
 ```
 
 
 
 Single mode
 ```
-$ igop run examples2/1.gop
+$ gos run examples2/1.gop
 ```
 
 Script arguments
 ```
-$ igop run examples2/2.go -- --abc 123 --def
+$ gos run examples2/2.go -- --abc 123 --def
 ```
 
 ## ⚡ Execute script code
 ```
-igop exec 
+gos exec 
   [-s | --script <code>] 
   [--debug] 
   -- <script arguments>
@@ -241,25 +253,25 @@ Execute script code from **StdIn** or the argument of "--script"
 #### Execute script from StdIn
 
 ```
-$ igop exec < example2/1.gop
+$ gos exec < example2/1.gop
 
-$ cat example2/1.gop | igop exec
+$ cat example2/1.gop | gos exec
 
-$ echo "i := 1+2; println(i)" | igop exec
-$ printf "i := 1+2 \n println(i)" | igop exec
+$ echo "i := 1+2; println(i)" | gos exec
+$ printf "i := 1+2 \n println(i)" | gos exec
 ```
 
 #### Execute script from argument
 
 ```
-$ igop exec -s "i := 1+2; println(i)"
+$ gos exec -s "i := 1+2; println(i)"
 ```
 
 > Use `;`(semicolons) instead of `\n`(carriage returns)
 
 ## REPL
 ```
-igop repl
+gos repl
 ```
 A [Go+](https://goplus.org/) Read Eval Print Loop
 
@@ -273,7 +285,7 @@ Shebang line:
 
 script.sh
 ```
-///usr/bin/true; exec /usr/bin/igop run -- "$0" "$@"
+///usr/bin/true; exec /usr/bin/gos run -- "$0" "$@"
 
 import "os"
 import "fmt"
@@ -294,4 +306,22 @@ $ sh ./script.sh --argument1 --argument2
 Print
 ```
 [./script.sh.gop --argument1 --argument2]
+```
+
+# Development
+
+## Install dependencies
+
+```shell
+go install github.com/goplus/igop/cmd/qexp@latest
+```
+
+## Build build-in scripts
+
+```shell
+cd pkgs
+qexp -outdir . -filename go_export github.com/inconshreveable/mousetrap github.com/spf13/pflag github.com/spf13/cobra go.uber.org/multierr gopkg.in/yaml.v3 github.com/pkg/errors
+
+cd ..
+go build
 ```

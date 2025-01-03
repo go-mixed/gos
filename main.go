@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	"gopkg.in/go-mixed/igop.v1/cmd/exec"
-	"gopkg.in/go-mixed/igop.v1/cmd/repl"
-	"gopkg.in/go-mixed/igop.v1/cmd/run"
+	"gopkg.in/go-mixed/gos.v1/cmd/exec"
+	"gopkg.in/go-mixed/gos.v1/cmd/repl"
+	"gopkg.in/go-mixed/gos.v1/cmd/run"
 )
 
 func main() {
