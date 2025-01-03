@@ -3,30 +3,29 @@
 Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://github.com/goplus/igop)
 
 ## ✨ Feature highlights
-- Run the Golang project **WITHOUT** [Golang compiler](https://go.dev/dl/)(142MB)
-- Only 25MB after built and [UPX](https://github.com/upx/upx)
-- Real time & Run：
-  - Go+ script file, 
-  - Golang file
-  - Golang project
-  - Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
-- Support shebang line, like `#!/usr/bin/bash`
-- Go+ Read-Eval-Print-Loop
-- **Go1.18~1.22 generics**
+- Run the Golang **WITHOUT** [Golang compiler](https://go.dev/dl/)(150MB+)
+- Only 14MB after built and [UPX -9](https://github.com/upx/upx)
+
+
+- [x] Go+ script file,
+- [x] Golang file
+- [x] Golang project
+- [X] Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
+- [X] Support shebang line, like `#!/usr/bin/bash`
+- [X] **Go1.18~1.22 generics**
+- [ ] main.go in the subdirectory
+- [ ] ASM file support
 
 ## TOC
 
-- gos run: run golang files
+- Run golang files
   - [Usage](#-run-golang-files)
   - [Single file mode](#single-file-mode)
   - [Project mode](#project-mode)
-    - [Without submodules, 3<sup>rd</sup> party modules](#without-submodules-3rd-party-modules)
-    - [With submodules, 3<sup>rd</sup> party modules](#with-submodules-or-3rd-party-modules)
   - [Archive mode](#archive-mode)
-- gos exec: execute script code
-  - [Usage](#-execute-script-code)
-- gos repl: [REPL](#repl)
-- bash ./script.sh: [run as shell file](#run-as-shell-file-like-sh)
+- [Execute script code](#execute-script-code)
+- [REPL](#repl)
+- [Run as shell file](#run-as-shell-file-like-sh)
 
 ## ⌛ Run Golang files 
 
@@ -51,7 +50,7 @@ Advanced options
 
 - `-I | --import <NAME=PATH>`: The package to be imported. 
   
-  `gos run . -I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`
+  `gos run . -I mathex=/path/to/mathx -I json2=/path/to/json2`
 
 - `-p | --plugin <path>`: (Only for linux)Load the "*.so" of golang plugin
   
