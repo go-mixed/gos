@@ -32,67 +32,67 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://gi
 
 ```
 gos run <PATH> 
-  [-V | --debug] 
-  [--vendor <path>] 
-  [-I | --import NAME=PATH] 
-  [-p | --plugin <path>] 
+  [-V | --debug]
   -- <arguments>
 ```
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
 
-|                         | Type      | Default       |                                                                                                |
-|-------------------------|-----------|---------------|------------------------------------------------------------------------------------------------|
-| <PATH>                  | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                             |
-| -V<br/>--debug          | Boolean   | false         | Print the debug information.                                                                   |
-| --vendor                | String    | <PATH>/vendor | The path of Golang dependency packages.<br/>Generate by `go mod vendor`.                       |
-| -I<br/>--import         | NAME=PATH |               | The package to be imported. `-I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`.                     |
-| -p<br/>--plugin \<path> | Array     |               | (Only for linux)Load the "*.so" of golang plugin, See https://github.com/go-mixed/gops_plugins |
-| -- \<arguments>         |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                     |
+|                 | Type      | Default       |                                                                                                |
+|-----------------|-----------|---------------|------------------------------------------------------------------------------------------------|
+| \<PATH>         | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                             |
+| -V<br/>--debug  | Boolean   | false         | Print the debug information.                                                                   |
+| -- \<arguments> |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                     |
+
+Advanced options
+- `--vendor`: The path of Golang dependency packages.
+
+  `gos run . --vendor=/path/to/vendor`
+
+- `-I | --import <NAME=PATH>`: The package to be imported. 
+  
+  `gos run . -I PACKAGE_NAME=PATH -I PACKAGE_NAME2=PATH2`
+
+- `-p | --plugin <path>`: (Only for linux)Load the "*.so" of golang plugin
+  
+  `gos run . --plugin /path/to/plugin1.so --plugin /path/to/plugin2.so`
+
+  See https://github.com/go-mixed/gops_plugins
+
 
 ### Single file mode
 
-#### Run a file with `*.gop`
+Run a file with `*.gop`、`*.go`
 
-```
-$ gos run /path/to/file.gop 
+> `.go` must be `package main` and includes `func main()`
+>
+> See [examples/example2/1.go](examples/example2/1.gop)、[examples/example2/2.go](examples/example2/2.go)
 
-# or
-$ cd /path/to
-$ gos run file.gop
-```
-The difference is that they have different **Working directories**
-
-Similarly hereinafter.
-
-> See [examples/example2/1.go](examples/example2/1.gop)
-
-#### Run a file with `*.go`
-
-Golang file, Must include `package main` and `func main()`
-
-```
-package main
-
-func main() {
-
-}
+Run
+```bash
+gos run /path/to/file.gop 
 ```
 
-> See [examples/example2/2.go](examples/example2/2.go)
+Run in the working directory
+```bash
+cd /path/to
+gos run file.gop
+```
 
+With arguments
+```bash
+gos run file.gop -- --abc 123 --def
 ```
-$ gos run /path/to/file.go 
-```
+
+
 
 ### Project mode
 
-#### Without submodules, 3<sup>rd</sup> party modules
+#### 1. Simple and flattened project 
 
-- The package MUST be `package main` in all `.go` files 
-- Included `func main()` in anyone `.go` file, or ONLY one `.gop` file
-- No sub-folder. even if the sub-folders are present, they will be ignored
-- Support Go/Go+ hybrid programming
+- Must be `package main` and One `func main()` in the working directory
+- The `gop` file implicitly contains a `func main()`, which is why only one `gop` file is allowed.
+
 
 ```
 /path/to/
@@ -101,63 +101,48 @@ $ gos run /path/to/file.go
  - main.go
 ```
 
-> ONLY allowed one `func main(){}`, Whether in the *.gop or *.go, See [examples/example3](examples/example3)
+>  See [examples/example3](examples/example3)
 
 Run
 
-```
-$ cd /path/to
-$ gos run .
-
-# or
-$ gos run /path/to
+```bash
+gos run /path/to/examples/example3
 ```
 
-#### With submodules, or 3<sup>rd</sup> party modules 
+Run in the working directory
+```bash
+cd /path/to/examples/example3
+gos run .
+```
 
-If the Golang project contains submodules, or 3<sup>rd</sup> party modules.
+With arguments
+```bash
+gos run . -- --abc 123 --def
+```
 
-Not allowed *.gop(Temporary)
+#### 2. Project with submodules, or 3<sup>rd</sup> party modules.
+
+- No allowed `*.gop`
+- `go.mod` MUST be in the working directory
+- `vendor/modules.txt` MUST be in the working directory, if you need 3rd-party modules
 
 ```
 /path/to
   - main.go
   - func/
     - func.go
-```
-
-MUST include these files
-```
-/path/to/
   - go.mod
-  - vendor/             <--- if you need 3rd-party modules
+  - vensor/  <--- if you need 3rd-party modules
     - modules.txt
 ```
 
 > See [examples/example1/](examples/example1)
 
-#### - go.mod
-
-Init the project to generate `go.mod` at first
-
-```
-$ go mod init your project-name
-```
-
-#### - `vendor` directory
-
-Run this command to create the vendor directory, 
-`gos` need to load the modules from `vendor/modules.txt`
-
-```
-$ go mod vendor
-```
-
 ### Archive mode
 
-This is a convenient way that a packaging of project mode
+A packaging of project 
 
-Support archive format. 
+Supported archive format. 
 
 - tar.gz
 - tar.bzip2
@@ -165,72 +150,19 @@ Support archive format.
 - zip
 - tar
 
-> See [examples/example1.tar.gz](examples/example5.tar.gz)
+> See [examples/example5.tar.gz](examples/example5.tar.gz)
+> 
+> When it runs, it'll actually be extract to `examples/__example1.tar.gz__`
 
-When it's running, it's actually being extract to `example1/__example1.tar.gz__`
 
-```
-$ gos run examples1/example1.tar.gz --vendor vendor
-```
-
-#### `vendor`, `import` path
-
-Unless you specify an absolute path that mean path on the OS, `--vendor` would be a relative path in archive.
-
-Same with the PATH of `--import NAME=PATH`.
-
-> the argument of `--vendor vendor` mean the vendor path is `examples1/__example1.tar.gz__/vendor`
-
-Use the vendor with absolute path in OS
-
-```
-$ gos run examples1/example1.tar.gz --vendor /path/to/vendor
+Run an archive
+```bash
+gos run examples/example5.tar.gz
 ```
 
-### Examples
-
-> See  "example1/"、"example2/"、"example3/"
-
-Project mode without modules
-```
-# run in the anywhere
-$ gos run example3/
-```
-
-```
-# run in the working directory
-$ cd example3/
-$ gos run .
-```
-
-
-Project mode with modules
-```
-# "vendor" in example1/
-$ gos run example1/
-```
-
-```
-# "vendor" in other path
-$ gos run example1/ --vendor example1/vendor
-```
-
-```
-# run in the working directory
-$ cd example1/
-$ gos run . 
-```
-
-
-
-Single mode
-```
-$ gos run examples2/1.gop
-```
-
-Script arguments
-```
-$ gos run examples2/2.go -- --abc 123 --def
+With arguments
+```bash
+gos run examples2/2.go -- --abc 123 --def
 ```
 
 ## ⚡ Execute script code
@@ -250,24 +182,28 @@ Execute script code from **StdIn** or the argument of "--script"
 
 ### Example
 
-#### Execute script from StdIn
+#### Code from StdIn
 
-```
-$ gos exec < example2/1.gop
-
-$ cat example2/1.gop | gos exec
-
-$ echo "i := 1+2; println(i)" | gos exec
-$ printf "i := 1+2 \n println(i)" | gos exec
+```bash
+gos exec < example2/1.gop
 ```
 
-#### Execute script from argument
+```bash
+cat example2/1.gop | gos exec
+```
+
+```bash
+echo "i := 1+2; println(i)" | gos exec
+printf "i := 1+2 \n println(i)" | gos exec
+```
+
+#### Code in argument "-s"
 
 ```
 $ gos exec -s "i := 1+2; println(i)"
 ```
 
-> Use `;`(semicolons) instead of `\n`(carriage returns)
+> Use `;`(semicolons) instead of carriage returns
 
 ## REPL
 ```

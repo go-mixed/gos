@@ -83,11 +83,6 @@ func initialPath(options runCmdOptions) (runCmdOptions, error) {
 
 	// 配置了vendor，检查是否有效
 	if options.vendorPath != "" {
-		// 压缩包模式，并且vendor非绝对路径，则将压缩包目录附加在前
-		if options.isArchive && !filepath.IsAbs(options.vendorPath) {
-			options.vendorPath = filepath.Join(options.realPath, options.vendorPath)
-		}
-
 		// 转为绝对路径
 		if options.vendorPath, err = filepath.Abs(options.vendorPath); err != nil {
 			return options, fmt.Errorf("[Vendor]%w", err)
