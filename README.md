@@ -13,8 +13,8 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://gi
 - [X] Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
 - [X] Support shebang line, like `#!/usr/bin/bash`
 - [X] **Go1.18~1.22 generics**
-- [ ] main.go in the subdirectory
-- [ ] ASM file support
+- [ ] `main.go` in the subdirectory
+- [ ] `*.asm` file support
 
 ## TOC
 
@@ -23,7 +23,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://gi
   - [Single file mode](#single-file-mode)
   - [Project mode](#project-mode)
   - [Archive mode](#archive-mode)
-- [Execute script code](#execute-script-code)
+- [Execute code](#execute-code)
 - [REPL](#repl)
 - [Run as shell file](#run-as-shell-file-like-sh)
 
@@ -45,6 +45,7 @@ Run a [Go+ script](https://goplus.org/), or a Golang project
 
 <details>
   <summary>Advanced options</summary>
+
 - `--vendor`: The path of Golang dependency packages.
 
   `gos run . --vendor=/path/to/vendor`
@@ -58,6 +59,7 @@ Run a [Go+ script](https://goplus.org/), or a Golang project
   `gos run . --plugin /path/to/plugin1.so --plugin /path/to/plugin2.so`
 
   See https://github.com/go-mixed/gops_plugins
+
 </details>
 
 ### Single file mode
@@ -142,7 +144,7 @@ gos run . -- --abc 123 --def
 
 A packaging of project 
 
-Supported archive format. 
+Supported archive format. When it runs, it'll actually be extract to `examples/__FILE_NAME__`
 
 - tar.gz
 - tar.bzip2
@@ -151,9 +153,6 @@ Supported archive format.
 - tar
 
 > See [examples/example5.tar.gz](examples/example5.tar.gz)
-> 
-> When it runs, it'll actually be extract to `examples/__example1.tar.gz__`
-
 
 Run an archive
 ```bash
@@ -165,7 +164,7 @@ With arguments
 gos run examples2/2.go -- --abc 123 --def
 ```
 
-## ⚡ Execute script code
+## ⚡ Execute code
 ```
 gos exec 
   [-s | --script <code>] 
