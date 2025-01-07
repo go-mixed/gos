@@ -30,7 +30,7 @@ Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://gi
 ## ⌛ Run Golang files 
 
 ```
-gos run <PATH> 
+gos <PATH>
   [-V | --debug]
   -- <arguments>
 ```
@@ -72,18 +72,18 @@ Run a file with `*.gop`、`*.go`
 
 Run
 ```bash
-gos run /path/to/file.gop 
+gos /path/to/file.gop
 ```
 
 Run in the working directory
 ```bash
 cd /path/to
-gos run file.gop
+gos file.gop
 ```
 
 With arguments
 ```bash
-gos run file.gop -- --abc 123 --def
+gos file.gop -- --abc 123 --def
 ```
 
 
@@ -108,18 +108,18 @@ gos run file.gop -- --abc 123 --def
 Run
 
 ```bash
-gos run /path/to/examples/example3
+gos /path/to/examples/example3
 ```
 
 Run in the working directory
 ```bash
 cd /path/to/examples/example3
-gos run .
+gos .
 ```
 
 With arguments
 ```bash
-gos run . -- --abc 123 --def
+gos . -- --abc 123 --def
 ```
 
 #### 2. Project with submodules, or 3<sup>rd</sup> party modules.
@@ -156,17 +156,17 @@ Supported archive format. When it runs, it'll actually be extract to `examples/_
 
 Run an archive
 ```bash
-gos run examples/example5.tar.gz
+gos examples/example5.tar.gz
 ```
 
 With arguments
 ```bash
-gos run examples2/2.go -- --abc 123 --def
+gos examples2/2.go -- --abc 123 --def
 ```
 
 ## ⚡ Execute code
 ```
-gos exec 
+gos
   [-s | --script <code>] 
   [--debug] 
   -- <script arguments>
@@ -184,22 +184,22 @@ Execute script code from **StdIn** or the argument of "--script"
 #### Code from StdIn
 
 ```bash
-gos exec < example2/1.gop
+gos < example2/1.gop
 ```
 
 ```bash
-cat example2/1.gop | gos exec
+cat example2/1.gop | gos
 ```
 
 ```bash
-echo "i := 1+2; println(i)" | gos exec
-printf "i := 1+2 \n println(i)" | gos exec
+echo "i := 1+2; println(i)" | gos
+printf "i := 1+2 \n println(i)" | gos
 ```
 
 #### Code in argument "-s"
 
 ```
-$ gos exec -s "i := 1+2; println(i)"
+$ gos -s "i := 1+2; println(i)"
 ```
 
 > Use `;`(semicolons) instead of carriage returns
@@ -220,7 +220,7 @@ Shebang line:
 
 script.sh
 ```
-///usr/bin/true; exec /usr/bin/gos run -- "$0" "$@"
+///usr/bin/true; exec /usr/bin/gos -- "$0" "$@"
 
 import "os"
 import "fmt"
