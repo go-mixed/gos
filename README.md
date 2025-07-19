@@ -6,13 +6,13 @@ Golang/[XGo](https://xgo.dev/) interpreter. Base on [ixgo v0.52.0](https://githu
 - Run the Golang **WITHOUT** [Golang compiler](https://go.dev/dl/)(150MB+)
 - Only 18MB after built and [UPX -9](https://github.com/upx/upx)
 
-
-- [x] XGo script file,
+- [X] Golang v1.24
+- [x] XGo script file (*.xgo, *.gop)
 - [x] Golang file
 - [x] Golang project
 - [X] Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
 - [X] Support shebang line, like `#!/usr/bin/bash`
-- [X] **Go1.18~1.23 generics**
+- [X] **Generic Function**
 - [ ] `main.go` in the subdirectory
 - [ ] `*.asm` file support
 
@@ -254,7 +254,7 @@ go install github.com/goplus/ixgo/cmd/qexp@latest
 ## Build build-in scripts
 
 ```shell
-qexp -code -outdir pkgs -filename go_export github.com/inconshreveable/mousetrap github.com/spf13/pflag github.com/spf13/cobra go.uber.org/multierr gopkg.in/yaml.v3 github.com/pkg/errors github.com/samber/lo
+qexp -outdir pkgs -filename go_export github.com/inconshreveable/mousetrap github.com/spf13/pflag github.com/spf13/cobra go.uber.org/multierr gopkg.in/yaml.v3 github.com/pkg/errors
 
 go build
 ```
