@@ -3,10 +3,11 @@
 package errors
 
 import (
-	"github.com/goplus/ixgo"
 	q "github.com/pkg/errors"
 
 	"reflect"
+
+	"github.com/goplus/ixgo"
 )
 
 func init() {

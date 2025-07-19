@@ -1,13 +1,14 @@
-// export by github.com/goplus/xgo/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package yaml
 
 import (
-	"github.com/goplus/ixgo"
 	q "gopkg.in/yaml.v3"
 
 	"go/constant"
 	"reflect"
+
+	"github.com/goplus/ixgo"
 )
 
 func init() {

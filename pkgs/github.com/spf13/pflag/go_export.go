@@ -3,11 +3,12 @@
 package pflag
 
 import (
-	"github.com/goplus/ixgo"
 	q "github.com/spf13/pflag"
 
 	"go/constant"
 	"reflect"
+
+	"github.com/goplus/ixgo"
 )
 
 func init() {
@@ -16,6 +17,7 @@ func init() {
 		Path: "github.com/spf13/pflag",
 		Deps: map[string]string{
 			"bytes":           "bytes",
+			"encoding":        "encoding",
 			"encoding/base64": "base64",
 			"encoding/csv":    "csv",
 			"encoding/hex":    "hex",
@@ -39,8 +41,12 @@ func init() {
 			"ErrorHandling":        reflect.TypeOf((*q.ErrorHandling)(nil)).Elem(),
 			"Flag":                 reflect.TypeOf((*q.Flag)(nil)).Elem(),
 			"FlagSet":              reflect.TypeOf((*q.FlagSet)(nil)).Elem(),
+			"InvalidSyntaxError":   reflect.TypeOf((*q.InvalidSyntaxError)(nil)).Elem(),
+			"InvalidValueError":    reflect.TypeOf((*q.InvalidValueError)(nil)).Elem(),
 			"NormalizedName":       reflect.TypeOf((*q.NormalizedName)(nil)).Elem(),
+			"NotExistError":        reflect.TypeOf((*q.NotExistError)(nil)).Elem(),
 			"ParseErrorsWhitelist": reflect.TypeOf((*q.ParseErrorsWhitelist)(nil)).Elem(),
+			"ValueRequiredError":   reflect.TypeOf((*q.ValueRequiredError)(nil)).Elem(),
 		},
 		AliasTypes: map[string]reflect.Type{},
 		Vars: map[string]reflect.Value{
@@ -52,6 +58,8 @@ func init() {
 			"Arg":                reflect.ValueOf(q.Arg),
 			"Args":               reflect.ValueOf(q.Args),
 			"Bool":               reflect.ValueOf(q.Bool),
+			"BoolFunc":           reflect.ValueOf(q.BoolFunc),
+			"BoolFuncP":          reflect.ValueOf(q.BoolFuncP),
 			"BoolP":              reflect.ValueOf(q.BoolP),
 			"BoolSlice":          reflect.ValueOf(q.BoolSlice),
 			"BoolSliceP":         reflect.ValueOf(q.BoolSliceP),
@@ -95,6 +103,8 @@ func init() {
 			"Float64SliceVarP":   reflect.ValueOf(q.Float64SliceVarP),
 			"Float64Var":         reflect.ValueOf(q.Float64Var),
 			"Float64VarP":        reflect.ValueOf(q.Float64VarP),
+			"Func":               reflect.ValueOf(q.Func),
+			"FuncP":              reflect.ValueOf(q.FuncP),
 			"IP":                 reflect.ValueOf(q.IP),
 			"IPMask":             reflect.ValueOf(q.IPMask),
 			"IPMaskP":            reflect.ValueOf(q.IPMaskP),
@@ -102,6 +112,10 @@ func init() {
 			"IPMaskVarP":         reflect.ValueOf(q.IPMaskVarP),
 			"IPNet":              reflect.ValueOf(q.IPNet),
 			"IPNetP":             reflect.ValueOf(q.IPNetP),
+			"IPNetSlice":         reflect.ValueOf(q.IPNetSlice),
+			"IPNetSliceP":        reflect.ValueOf(q.IPNetSliceP),
+			"IPNetSliceVar":      reflect.ValueOf(q.IPNetSliceVar),
+			"IPNetSliceVarP":     reflect.ValueOf(q.IPNetSliceVarP),
 			"IPNetVar":           reflect.ValueOf(q.IPNetVar),
 			"IPNetVarP":          reflect.ValueOf(q.IPNetVarP),
 			"IPP":                reflect.ValueOf(q.IPP),
@@ -151,6 +165,7 @@ func init() {
 			"Parse":              reflect.ValueOf(q.Parse),
 			"ParseAll":           reflect.ValueOf(q.ParseAll),
 			"ParseIPv4Mask":      reflect.ValueOf(q.ParseIPv4Mask),
+			"ParseSkippedFlags":  reflect.ValueOf(q.ParseSkippedFlags),
 			"Parsed":             reflect.ValueOf(q.Parsed),
 			"PrintDefaults":      reflect.ValueOf(q.PrintDefaults),
 			"Set":                reflect.ValueOf(q.Set),
@@ -180,6 +195,12 @@ func init() {
 			"StringToStringVarP": reflect.ValueOf(q.StringToStringVarP),
 			"StringVar":          reflect.ValueOf(q.StringVar),
 			"StringVarP":         reflect.ValueOf(q.StringVarP),
+			"TextVar":            reflect.ValueOf(q.TextVar),
+			"TextVarP":           reflect.ValueOf(q.TextVarP),
+			"Time":               reflect.ValueOf(q.Time),
+			"TimeP":              reflect.ValueOf(q.TimeP),
+			"TimeVar":            reflect.ValueOf(q.TimeVar),
+			"TimeVarP":           reflect.ValueOf(q.TimeVarP),
 			"Uint":               reflect.ValueOf(q.Uint),
 			"Uint16":             reflect.ValueOf(q.Uint16),
 			"Uint16P":            reflect.ValueOf(q.Uint16P),

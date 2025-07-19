@@ -1,6 +1,6 @@
 # Gos
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [ixgo v0.52.0](https://github.com/goplus/ixgo)
+Golang/[XGo](https://xgo.dev/) interpreter. Base on [ixgo v0.52.0](https://github.com/goplus/ixgo)
 
 ## ✨ Feature highlights
 - Run the Golang **WITHOUT** [Golang compiler](https://go.dev/dl/)(150MB+)
@@ -35,7 +35,7 @@ gos <PATH>
   -- <arguments>
 ```
 
-Run a [Go+ script](https://goplus.org/), or a Golang project
+Run a [XGo script](https://xgo.dev/), or a Golang project
 
 |                 | Type      | Default       |                                                                     |
 |-----------------|-----------|---------------|---------------------------------------------------------------------|
@@ -176,7 +176,7 @@ Execute script code from **StdIn** or the argument of "--script"
 |                         | Type   | Default |                                                            |
 |-------------------------|--------|---------|------------------------------------------------------------|
 | -V<br/>--debug          |        | false   | Print the debug information.                               |
-| -s<br/>--script \<code> | String |         | The Golang/Go+ script as string                            |
+| -s<br/>--script \<code> | String |         | The Golang/XGo script as string                           |
 | -- \<arguments>         |        |         | arguments for script.<br/>Be read `os.Args` in the script. |
 
 ### Example
@@ -208,9 +208,9 @@ $ gos -s "i := 1+2; println(i)"
 ```
 gos repl
 ```
-A [Go+](https://goplus.org/) Read Eval Print Loop
+A [XGo](https://xgo.dev/) Read Eval Print Loop
 
-Online: [https://repl.goplus.org/](https://repl.goplus.org/)
+Online: [https://repl.xgo.dev/](https://repl.xgo.dev/)
 
 ![](docs/repl_examples.png)
 
@@ -248,15 +248,13 @@ Print
 ## Install dependencies
 
 ```shell
-go install github.com/goplus/xgop/cmd/qexp@latest
+go install github.com/goplus/ixgo/cmd/qexp@latest
 ```
 
 ## Build build-in scripts
 
 ```shell
-cd pkgs
-qexp -outdir . -filename go_export github.com/inconshreveable/mousetrap github.com/spf13/pflag github.com/spf13/cobra go.uber.org/multierr gopkg.in/yaml.v3 github.com/pkg/errors
+qexp -code -outdir pkgs -filename go_export github.com/inconshreveable/mousetrap github.com/spf13/pflag github.com/spf13/cobra go.uber.org/multierr gopkg.in/yaml.v3 github.com/pkg/errors github.com/samber/lo
 
-cd ..
 go build
 ```

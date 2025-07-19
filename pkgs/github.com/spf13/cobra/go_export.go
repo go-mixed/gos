@@ -3,11 +3,12 @@
 package cobra
 
 import (
-	"github.com/goplus/ixgo"
 	q "github.com/spf13/cobra"
 
 	"go/constant"
 	"reflect"
+
+	"github.com/goplus/ixgo"
 )
 
 func init() {
@@ -34,7 +35,9 @@ func init() {
 			"time":                                 "time",
 			"unicode":                              "unicode",
 		},
-		Interfaces: map[string]reflect.Type{},
+		Interfaces: map[string]reflect.Type{
+			"SliceValue": reflect.TypeOf((*q.SliceValue)(nil)).Elem(),
+		},
 		NamedTypes: map[string]reflect.Type{
 			"Command":            reflect.TypeOf((*q.Command)(nil)).Elem(),
 			"CompletionOptions":  reflect.TypeOf((*q.CompletionOptions)(nil)).Elem(),
@@ -43,7 +46,10 @@ func init() {
 			"PositionalArgs":     reflect.TypeOf((*q.PositionalArgs)(nil)).Elem(),
 			"ShellCompDirective": reflect.TypeOf((*q.ShellCompDirective)(nil)).Elem(),
 		},
-		AliasTypes: map[string]reflect.Type{},
+		AliasTypes: map[string]reflect.Type{
+			"Completion":     reflect.TypeOf((*string)(nil)).Elem(),
+			"CompletionFunc": reflect.TypeOf((*q.CompletionFunc)(nil)).Elem(),
+		},
 		Vars: map[string]reflect.Value{
 			"EnableCaseInsensitive":    reflect.ValueOf(&q.EnableCaseInsensitive),
 			"EnableCommandSorting":     reflect.ValueOf(&q.EnableCommandSorting),
@@ -62,6 +68,7 @@ func init() {
 			"CompDebugln":         reflect.ValueOf(q.CompDebugln),
 			"CompError":           reflect.ValueOf(q.CompError),
 			"CompErrorln":         reflect.ValueOf(q.CompErrorln),
+			"CompletionWithDesc":  reflect.ValueOf(q.CompletionWithDesc),
 			"Eq":                  reflect.ValueOf(q.Eq),
 			"ExactArgs":           reflect.ValueOf(q.ExactArgs),
 			"ExactValidArgs":      reflect.ValueOf(q.ExactValidArgs),
