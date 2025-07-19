@@ -2,9 +2,9 @@ package repl
 
 import (
 	"fmt"
-	"github.com/goplus/gop/env"
-	"github.com/goplus/igop"
-	"github.com/goplus/igop/repl"
+	"github.com/goplus/ixgo"
+	"github.com/goplus/ixgo/repl"
+	"github.com/goplus/xgo/env"
 	"github.com/peterh/liner"
 	"github.com/spf13/cobra"
 	"io"
@@ -22,9 +22,9 @@ func ReplCmd() *cobra.Command {
 
 	replCmd := &cobra.Command{
 		Use:   "repl",
-		Short: "run a go+ REPL " + env.Version(),
+		Short: "run a gos REPL " + env.Version(),
 		Run: func(cmd *cobra.Command, args []string) {
-			igopRepl(options)
+			gosRepl(options)
 		},
 	}
 
@@ -48,8 +48,8 @@ func (u *LinerUI) Printf(format string, a ...interface{}) {
 	fmt.Printf(format, a...)
 }
 
-func igopRepl(options replOptions) {
-	fmt.Printf("iGo+ REPL %s\n", env.Version())
+func gosRepl(options replOptions) {
+	fmt.Printf("Gos REPL %s\n", env.Version())
 	state := liner.NewLiner()
 	defer state.Close()
 
@@ -62,18 +62,18 @@ func igopRepl(options replOptions) {
 		return nil
 	})
 	ui := &LinerUI{state: state}
-	var mode igop.Mode
+	var mode ixgo.Mode
 	if options.debug {
-		mode |= igop.EnableDumpInstr | igop.EnableTracing
+		mode |= ixgo.EnableDumpInstr | ixgo.EnableTracing
 	}
 
 	var r *repl.REPL
-	igop.RegisterCustomBuiltin("exit", func() {
+	ixgo.RegisterCustomBuiltin("exit", func() {
 		r.Interp().Exit(0)
 	})
 	r = repl.NewREPL(mode)
 	r.SetUI(ui)
-	r.SetFileName("main.gop") // support go+
+	r.SetFileName("main.xgo") // support xgo
 
 	for {
 		line, err := ui.state.Prompt(ui.prompt)
@@ -92,7 +92,7 @@ func igopRepl(options replOptions) {
 		switch e := err.(type) {
 		case nil:
 			//
-		case igop.ExitError:
+		case ixgo.ExitError:
 			fmt.Printf("exit %v\n", int(e))
 			return
 		default:

@@ -1,9 +1,10 @@
 package mod
 
 import (
-	"github.com/goplus/igop"
-	"github.com/goplus/igop/gopbuild"
+	"github.com/goplus/ixgo"
+	"github.com/goplus/ixgo/xgobuild"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 	"golang.org/x/tools/go/ssa"
 	"os"
 	"path/filepath"
@@ -21,12 +22,12 @@ func canonicalize(path string) string {
 	return nPath
 }
 
-func containsExt(srcDir string, ext string) bool {
+func containsExt(srcDir string, exts ...string) bool {
 	if f, err := os.Open(srcDir); err == nil {
 		defer f.Close()
 		fis, _ := f.Readdir(-1)
 		for _, fi := range fis {
-			if !fi.IsDir() && filepath.Ext(fi.Name()) == ext {
+			if !fi.IsDir() && lo.Contains(exts, filepath.Ext(fi.Name())) {
 				return true
 			}
 		}
@@ -54,8 +55,8 @@ func containsSubModules(projectPath string) bool {
 	return false
 }
 
-func gopBuildDir(ctx *igop.Context, path string) error {
-	data, err := gopbuild.BuildDir(ctx, path)
+func gopBuildDir(ctx *ixgo.Context, path string) error {
+	data, err := xgobuild.BuildDir(ctx, path)
 	if err != nil {
 		return errors.WithStack(err)
 	}

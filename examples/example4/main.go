@@ -5,7 +5,7 @@ import (
 	"golang.org/x/image/math/f64"
 )
 
-// igop run -p /path/to/igop_pluginx_x.so examples/example4
+// ixgo run -p /path/to/ixgo_pluginx_x.so examples/example4
 
 func main() {
 	fmt.Printf("--from plugin--\n")

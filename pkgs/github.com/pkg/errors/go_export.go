@@ -1,17 +1,16 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package errors
 
 import (
+	"github.com/goplus/ixgo"
 	q "github.com/pkg/errors"
 
 	"reflect"
-
-	"github.com/goplus/igop"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "errors",
 		Path: "github.com/pkg/errors",
 		Deps: map[string]string{
@@ -43,7 +42,7 @@ func init() {
 			"Wrap":         reflect.ValueOf(q.Wrap),
 			"Wrapf":        reflect.ValueOf(q.Wrapf),
 		},
-		TypedConsts:   map[string]igop.TypedConst{},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		TypedConsts:   map[string]ixgo.TypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

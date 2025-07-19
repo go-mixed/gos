@@ -1,18 +1,17 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/xgo/cmd/qexp
 
 package yaml
 
 import (
+	"github.com/goplus/ixgo"
 	q "gopkg.in/yaml.v3"
 
 	"go/constant"
 	"reflect"
-
-	"github.com/goplus/igop"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "yaml",
 		Path: "gopkg.in/yaml.v3",
 		Deps: map[string]string{
@@ -54,7 +53,7 @@ func init() {
 			"NewEncoder": reflect.ValueOf(q.NewEncoder),
 			"Unmarshal":  reflect.ValueOf(q.Unmarshal),
 		},
-		TypedConsts: map[string]igop.TypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{
 			"AliasNode":         {reflect.TypeOf(q.AliasNode), constant.MakeInt64(int64(q.AliasNode))},
 			"DocumentNode":      {reflect.TypeOf(q.DocumentNode), constant.MakeInt64(int64(q.DocumentNode))},
 			"DoubleQuotedStyle": {reflect.TypeOf(q.DoubleQuotedStyle), constant.MakeInt64(int64(q.DoubleQuotedStyle))},
@@ -67,6 +66,6 @@ func init() {
 			"SingleQuotedStyle": {reflect.TypeOf(q.SingleQuotedStyle), constant.MakeInt64(int64(q.SingleQuotedStyle))},
 			"TaggedStyle":       {reflect.TypeOf(q.TaggedStyle), constant.MakeInt64(int64(q.TaggedStyle))},
 		},
-		UntypedConsts: map[string]igop.UntypedConst{},
+		UntypedConsts: map[string]ixgo.UntypedConst{},
 	})
 }

@@ -1,18 +1,17 @@
-// export by github.com/goplus/igop/cmd/qexp
+// export by github.com/goplus/ixgo/cmd/qexp
 
 package cobra
 
 import (
+	"github.com/goplus/ixgo"
 	q "github.com/spf13/cobra"
 
 	"go/constant"
 	"reflect"
-
-	"github.com/goplus/igop"
 )
 
 func init() {
-	igop.RegisterPackage(&igop.Package{
+	ixgo.RegisterPackage(&ixgo.Package{
 		Name: "cobra",
 		Path: "github.com/spf13/cobra",
 		Deps: map[string]string{
@@ -84,7 +83,7 @@ func init() {
 			"RangeArgs":           reflect.ValueOf(q.RangeArgs),
 			"WriteStringAndCheck": reflect.ValueOf(q.WriteStringAndCheck),
 		},
-		TypedConsts: map[string]igop.TypedConst{
+		TypedConsts: map[string]ixgo.TypedConst{
 			"ShellCompDirectiveDefault":       {reflect.TypeOf(q.ShellCompDirectiveDefault), constant.MakeInt64(int64(q.ShellCompDirectiveDefault))},
 			"ShellCompDirectiveError":         {reflect.TypeOf(q.ShellCompDirectiveError), constant.MakeInt64(int64(q.ShellCompDirectiveError))},
 			"ShellCompDirectiveFilterDirs":    {reflect.TypeOf(q.ShellCompDirectiveFilterDirs), constant.MakeInt64(int64(q.ShellCompDirectiveFilterDirs))},
@@ -93,7 +92,7 @@ func init() {
 			"ShellCompDirectiveNoFileComp":    {reflect.TypeOf(q.ShellCompDirectiveNoFileComp), constant.MakeInt64(int64(q.ShellCompDirectiveNoFileComp))},
 			"ShellCompDirectiveNoSpace":       {reflect.TypeOf(q.ShellCompDirectiveNoSpace), constant.MakeInt64(int64(q.ShellCompDirectiveNoSpace))},
 		},
-		UntypedConsts: map[string]igop.UntypedConst{
+		UntypedConsts: map[string]ixgo.UntypedConst{
 			"BashCompCustom":               {"untyped string", constant.MakeString(string(q.BashCompCustom))},
 			"BashCompFilenameExt":          {"untyped string", constant.MakeString(string(q.BashCompFilenameExt))},
 			"BashCompOneRequiredFlag":      {"untyped string", constant.MakeString(string(q.BashCompOneRequiredFlag))},

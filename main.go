@@ -31,7 +31,7 @@ Execute script if <code> from stdin, or -s "code".
 			} else {
 				options.ScriptIsSet = _cmd.Flags().Changed("script")
 
-				code, err := cmd.IgopExec(options, args)
+				code, err := cmd.GosExec(options, args)
 				if err != nil {
 					fmt.Fprint(os.Stderr, err.Error())
 				}

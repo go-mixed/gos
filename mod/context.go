@@ -2,7 +2,7 @@ package mod
 
 import (
 	"fmt"
-	"github.com/goplus/igop"
+	"github.com/goplus/ixgo"
 	"github.com/pkg/errors"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/ssa"
@@ -13,12 +13,15 @@ import (
 )
 
 import (
-	_ "github.com/goplus/igop/pkg"
-	_ "github.com/goplus/ipkg/github.com/modern-go/reflect2"
+	_ "gopkg.in/go-mixed/gos.v1/pkgs/github.com/modern-go/reflect2"
+
+	_ "github.com/goplus/ixgo/pkg"
+	_ "unsafe"
+
 	_ "github.com/goplus/reflectx/icall/icall8192"
 	_ "gopkg.in/go-mixed/gos.v1/pkgs"
 
-	_ "github.com/goplus/igop/gopbuild" // 注册gop后缀
+	_ "github.com/goplus/ixgo/xgobuild" // 注册gop后缀
 )
 
 type Module struct {
@@ -29,7 +32,7 @@ type Module struct {
 }
 
 type Context struct {
-	*igop.Context
+	*ixgo.Context
 	mainPackage *ssa.Package
 
 	path    string
@@ -39,13 +42,13 @@ type Context struct {
 }
 
 func NewContext(projectPath string, debug bool) *Context {
-	var mode = igop.EnablePrintAny
+	var mode = ixgo.EnablePrintAny
 	if debug {
-		mode |= igop.EnableTracing | igop.EnableDumpImports | igop.EnableDumpInstr
+		mode |= ixgo.EnableTracing | ixgo.EnableDumpImports | ixgo.EnableDumpInstr
 	}
 
 	var ctx = &Context{
-		Context: igop.NewContext(mode),
+		Context: ixgo.NewContext(mode),
 		modules: map[string]*Module{},
 		path:    canonicalize(projectPath),
 		debug:   debug,
@@ -64,7 +67,7 @@ func (ctx *Context) IsDebug() bool {
 	return ctx.debug
 }
 
-func (ctx *Context) GetIgop() *igop.Context {
+func (ctx *Context) GetIgop() *ixgo.Context {
 	return ctx.Context
 }
 
@@ -90,7 +93,7 @@ func (ctx *Context) RunMain(args []string) (int, error) {
 	return ctx.RunPkg(ctx.mainPackage, ctx.path, args)
 }
 
-func (ctx *Context) RunFunc(funcName string, args []igop.Value) (igop.Value, error) {
+func (ctx *Context) RunFunc(funcName string, args []ixgo.Value) (ixgo.Value, error) {
 	if ctx.mainPackage == nil {
 		if err := ctx.Build(); err != nil {
 			return -1, err
@@ -120,9 +123,9 @@ func (ctx *Context) Build() error {
 		}
 
 		// 检查目录下是否有gop文件
-		if containsExt(ctx.path, ".gop") {
+		if containsExt(ctx.path, ".xgo", ".gop") {
 			if containsSubModules(ctx.path) {
-				return errors.New("*.gop is not allowed in project mode with 3rd party modules")
+				return errors.New("*.gop/*.xgo is not allowed in project mode with 3rd party modules")
 			}
 			if err = gopBuildDir(ctx.Context, ctx.path); err != nil {
 				return err
@@ -139,8 +142,8 @@ func (ctx *Context) Build() error {
 		}
 
 		// 修改后缀
-		if ext != ".go" && ext != ".gop" {
-			_path = _path + ".gop"
+		if ext != ".go" && ext != ".xgo" && ext != ".gop" {
+			_path = _path + ".xgo"
 		}
 
 		// 修改bang line为golang支持的注释, 参考 https://github.com/erning/gorun/blob/master/gorun.go#L167
@@ -155,7 +158,7 @@ func (ctx *Context) Build() error {
 	return errors.WithStack(err)
 }
 
-func (ctx *Context) BuildInterp() (*igop.Interp, error) {
+func (ctx *Context) BuildInterp() (*ixgo.Interp, error) {
 	return ctx.NewInterp(ctx.GetMainPackage())
 }
 

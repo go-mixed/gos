@@ -1,18 +1,18 @@
 # Gos
 
-Golang/[Go+](https://goplus.org/) interpreter. Base on [igop v0.27.1](https://github.com/goplus/igop)
+Golang/[Go+](https://goplus.org/) interpreter. Base on [ixgo v0.52.0](https://github.com/goplus/ixgo)
 
 ## ✨ Feature highlights
 - Run the Golang **WITHOUT** [Golang compiler](https://go.dev/dl/)(150MB+)
-- Only 14MB after built and [UPX -9](https://github.com/upx/upx)
+- Only 18MB after built and [UPX -9](https://github.com/upx/upx)
 
 
-- [x] Go+ script file,
+- [x] XGo script file,
 - [x] Golang file
 - [x] Golang project
 - [X] Golang project in an archive file of `*.tar.gz`, `*.tar.xz`, ...
 - [X] Support shebang line, like `#!/usr/bin/bash`
-- [X] **Go1.18~1.22 generics**
+- [X] **Go1.18~1.23 generics**
 - [ ] `main.go` in the subdirectory
 - [ ] `*.asm` file support
 
@@ -37,11 +37,11 @@ gos <PATH>
 
 Run a [Go+ script](https://goplus.org/), or a Golang project
 
-|                 | Type      | Default       |                                                                                                |
-|-----------------|-----------|---------------|------------------------------------------------------------------------------------------------|
-| \<PATH>         | String    |               | File of Golang+ script, "*.gop". <br/>Directory of Golang project.                             |
-| -V<br/>--debug  | Boolean   | false         | Print the debug information.                                                                   |
-| -- \<arguments> |           |               | arguments for script.<br/>Be read `os.Args` in the script.                                     |
+|                 | Type      | Default       |                                                                     |
+|-----------------|-----------|---------------|---------------------------------------------------------------------|
+| \<PATH>         | String    |               | File of Golang+ script, "*.xgo". <br/>Directory of Golang project. |
+| -V<br/>--debug  | Boolean   | false         | Print the debug information.                                        |
+| -- \<arguments> |           |               | arguments for script.<br/>Be read `os.Args` in the script.          |
 
 <details>
   <summary>Advanced options</summary>
@@ -64,26 +64,26 @@ Run a [Go+ script](https://goplus.org/), or a Golang project
 
 ### Single file mode
 
-Run a file with `*.gop`、`*.go`
+Run a file with `*.xgo`、`*.go`
 
 > `.go` must be `package main` and includes `func main()`
 >
-> See [examples/example2/1.go](examples/example2/1.gop)、[examples/example2/2.go](examples/example2/2.go)
+> See [examples/example2/1.go](examples/example2/1.xgo)、[examples/example2/2.go](examples/example2/2.go)
 
 Run
 ```bash
-gos /path/to/file.gop
+gos /path/to/file.xgo
 ```
 
 Run in the working directory
 ```bash
 cd /path/to
-gos file.gop
+gos file.xgo
 ```
 
 With arguments
 ```bash
-gos file.gop -- --abc 123 --def
+gos file.xgo -- --abc 123 --def
 ```
 
 
@@ -93,13 +93,13 @@ gos file.gop -- --abc 123 --def
 #### 1. Simple and flattened project 
 
 - Must be `package main` and One `func main()` in the working directory
-- The `gop` file implicitly contains a `func main()`, which is why only one `gop` file is allowed.
+- The `.xgo` file implicitly contains a `func main()`, which is why only one `.xgo` file is allowed.
 
 
 ```
 /path/to/
  - func.go
- - func.gop
+ - func.xgo
  - main.go
 ```
 
@@ -124,7 +124,7 @@ gos . -- --abc 123 --def
 
 #### 2. Project with submodules, or 3<sup>rd</sup> party modules.
 
-- No allowed `*.gop`
+- No allowed `*.xgo`
 - `go.mod` MUST be in the working directory
 - `vendor/modules.txt` MUST be in the working directory, if you need 3rd-party modules
 
@@ -184,11 +184,11 @@ Execute script code from **StdIn** or the argument of "--script"
 #### Code from StdIn
 
 ```bash
-gos < example2/1.gop
+gos < example2/1.xgo
 ```
 
 ```bash
-cat example2/1.gop | gos
+cat example2/1.xgo | gos
 ```
 
 ```bash
@@ -240,7 +240,7 @@ $ sh ./script.sh --argument1 --argument2
 
 Print
 ```
-[./script.sh.gop --argument1 --argument2]
+[./script.sh.xgo --argument1 --argument2]
 ```
 
 # Development
@@ -248,7 +248,7 @@ Print
 ## Install dependencies
 
 ```shell
-go install github.com/goplus/igop/cmd/qexp@latest
+go install github.com/goplus/xgop/cmd/qexp@latest
 ```
 
 ## Build build-in scripts
